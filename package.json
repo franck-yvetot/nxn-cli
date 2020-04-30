@@ -1,0 +1,23 @@
+{
+  "name": "@nxn/cli",
+  "version": "1.0.0",
+  "description": "generators for applications based on nxn components",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/franck-yvetot/nxn-cli.git"
+  },
+  "keywords": [
+    "nxn",
+    "cli"
+  ],
+  "author": "Franck Yvetot",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/franck-yvetot/nxn-cli/issues"
+  },
+  "homepage": "https://github.com/franck-yvetot/nxn-cli#readme"
+}
