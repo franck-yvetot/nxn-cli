@@ -1,4 +1,4 @@
-const file = require('nxn/file.service');
+const file = require('@nxn/files');
 
 class Generators {
 
