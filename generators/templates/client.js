@@ -69,30 +69,12 @@ pad+`Create a client directory in /client_data and adds a default config file in
 
     async generate(path,name,force) {
 
-        let aName = name.split('/');
-        let basename = aName.pop();
-
-        let path2 = aName.join('/');
-        path = path+'/'+path2;
-        
-        basename = _path_.basename(basename);
-        let matches = basename.match('/([^.]+)[.]service/');
-        if(matches)
-            basename=matches[1];
-        
-        if(path.search('/services')==-1 && path.search('node_modules')==-1)
-            path = path+'/services';
-
-        let fullPath = path+'/'+basename+'.service.js';
+        let fullPath = path+='/client_data/'+name+'/config.json';
         fullPath = fullPath.replace("//","/");
 
         let s = template;
-        let Basename = strings.toCamelCase(basename,true);
-
-        s = s.replace(/MY_SCE/g,Basename);
-
         if(await fs.existsFileAsync(fullPath) && (force!='force')) {
-            console.error("this service already exists");
+            console.error("this client configuration already exists in "+fullPath);
             return false;
         }
 
@@ -102,7 +84,7 @@ pad+`Create a client directory in /client_data and adds a default config file in
             console.error(error);
         }
 
-        console.log("Generated service "+fullPath);
+        console.log("Generated client data folder "+fullPath);
         return true;
     }
 }

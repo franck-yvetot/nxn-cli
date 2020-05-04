@@ -20,8 +20,9 @@ const run = async () => {
     let name = myArgs[1];
 
     let path=(myArgs[2]||'')+'/';
-    if(path.search('application')==-1)
+    if((type!="client") && (path.search('application')==-1))
         path = '/applications/'+path;
+        
     path = process.cwd()+'/'+path;
 
     path = path.replace("//","/");
