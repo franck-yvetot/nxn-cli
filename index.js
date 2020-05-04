@@ -9,7 +9,7 @@ const run = async () => {
     {
         console.error("This tool generates code. The general form is :\nnode generate.js <type> <other params>\n\n");
 
-        const lines = generators.usage("> node generate.js ").then(
+        const lines = generators.usage("> nxg ").then(
             lines => console.log("Supported generator commands :\n"+lines.join("\n"))
         );
 
