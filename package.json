@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/franck-yvetot/nxn-cli/issues"
   },
-  "homepage": "https://github.com/franck-yvetot/nxn-cli#readme"
+  "homepage": "https://github.com/franck-yvetot/nxn-cli#readme",
+  "dependencies": {
+    "@nxn/files": "^1.0.3"
+  }
 }
