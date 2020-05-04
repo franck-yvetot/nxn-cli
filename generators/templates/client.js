@@ -2,37 +2,68 @@ const fs = require('@nxn/files');
 const _path_ = require('path');
 const strings = require('@nxn/ext/string.service');
 
-const template = `const debug = require("@nxn/debug")('MY_SCE');
+const template = `{
+    "middleware" : 
+    {
+        "defaultPath":"@nxn/boot/middleware/$id",
+        "load" : "ENV,debug,express,CORS2,JSON",
 
-class MY_SCESce
-{
-    constructor() {
-        this.config = {};
-    }
+        "configuration" : {
+            "express":{
+                "port":3000,
+                "message":"Express server run on port"
+            },
 
-    init(config) {
-        this.config = config;
-    }
+            "cors2" : {
+                "verbs": "GET,POST,PUT,DELETE"
+            },
 
-    test(row) {
-        console.log("test ok");
+            "env" : {
+            },
+
+            "debug" : {
+                "path" : "@nxn/debug",
+                "DEBUG": "*,-VIDEO_SCE:Parser,VIDEO_SCE:Index,-retry-request,-GBUCKET,",
+                "DEBUG_COLORS":1
+            }
+        }
+    },
+
+    "services" : {
+        "defaultPath":"",
+        
+        "load" : "",
+
+        "configuration" : {
+        }
+    },
+    
+    "routes" : {
+        "defaultPath":"applications/$id/routes/$id.routes",
+        "load" : "",
+
+        "configuration" : {       
+        }            
+    },
+
+    "run" : {
+        "load" : "express"
     }
 }
-
-module.exports = new MY_SCESce();
 `;
 
-class Generator
+class CltGenerator
 {
-    usage(pad=' ') {
+    init(config) {
+
+    }
+
+    usage(pad) {
         return {
-            usage:"APP SCE",
+            usage:"CLT_NAME",
             description:
-pad+`adds a service class in an application, code is generated in /applications/APP/SCE.service.js,
-${pad}where APP and SCE are the names of the application and service.
-${pad}The application folder is created if it doesn't exist yet.
-${pad}The service can be configured if added to the "service/configuration" section of the config file in the client data.
-`
+pad+`Create a client directory in /client_data and adds a default config file in json.`
+
         };
     }
 
@@ -76,4 +107,4 @@ ${pad}The service can be configured if added to the "service/configuration" sect
     }
 }
 
-module.exports = new Generator();
+module.exports = new CltGenerator();

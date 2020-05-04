@@ -6,6 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "bin": {
+    "nxg": "./index.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/franck-yvetot/nxn-cli.git"

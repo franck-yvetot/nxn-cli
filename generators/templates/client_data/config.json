@@ -1,0 +1,48 @@
+{
+    "middleware" : 
+    {
+        "defaultPath":"nxn-boot/middleware/$id",
+        "load" : "ENV,debug,express,CORS2,JSON",
+
+        "configuration" : {
+            "express":{
+                "port":3000,
+                "message":"Express server run on port"
+            },
+
+            "cors2" : {
+                "verbs": "GET,POST,PUT,DELETE"
+            },
+
+            "env" : {
+            },
+
+            "debug" : {
+                "path" : "nxn-boot/$id.service",
+                "DEBUG": "*,-VIDEO_SCE:Parser,VIDEO_SCE:Index,-retry-request,-GBUCKET,",
+                "DEBUG_COLORS":1
+            }
+        }
+    },
+
+    "services" : {
+        "defaultPath":"nxn/$id",
+        
+        "load" : "",
+
+        "configuration" : {
+        }
+    },
+    
+    "routes" : {
+        "defaultPath":"$id/routes/$id.routes",
+        "load" : "",
+
+        "configuration" : {       
+        }            
+    },
+
+    "run" : {
+        "load" : "express"
+    }
+}
