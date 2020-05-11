@@ -8,7 +8,7 @@ class MY_ROUTESce
     constructor() {
     }
 
-    init(config,express,app)
+    init(config,express,injections)
     {
         const router = express.Router();
 
@@ -59,7 +59,7 @@ ${pad}The route can be configured if added to the "routes/configuration" section
     if(path.search('/routes')==-1)
         path = path+'/routes';
 
-    let fullPath = path+'/routes/'+name+'.route.js';
+    let fullPath = path+'/'+name+'.route.js';
     fullPath = fullPath.replace("//","/");
     
     if(await fs.existsFileAsync(fullPath) && (force!='force')) {

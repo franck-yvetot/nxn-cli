@@ -43,19 +43,25 @@ ${pad}The command can be executed if added to the "run/configuration" section of
     }
 
     async generate(path,name,force) {
+        let aName = name.split('/');
+        let basename = aName.pop();
+
+        let path2 = aName.join('/');
+        path = path+'/'+path2;
+
+        basename = _path_.basename(basename);
+        let matches = basename.match('/([^.]+)[.]script/');
+        if(matches)
+            basename=matches[1];
+        
+        if(path.search('/scripts')==-1 && path.search('node_modules')==-1)
+            path = path+'/scripts';
+
+        let fullPath = path+'/'+basename+'.js';
+        fullPath = fullPath.replace("//","/");
 
         var s = template;
         s = s.replace(/MY_SCRIPT/g,name);
-
-        if(path.search('application')==-1)
-            path = '/applications/'+path;
-        
-        if(path.search('/scripts')==-1)
-            path = path+'/scripts';
-
-        let fullPath = path+'/'+name+'.js';
-        fullPath = fullPath.replace("//","/");
-
         
         if(await fs.existsFileAsync(fullPath) && (force!='force')) {
             console.error("this script already exists");
