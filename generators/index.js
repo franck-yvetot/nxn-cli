@@ -4,6 +4,7 @@ const arrAsync = require("@nxn/ext/array.service");
 const templates = [
     'client',
     'service',
+    'node',
     'route',
     'script'
 ]
@@ -17,7 +18,11 @@ class Generators {
             throw new Error("template does not exist for type "+type);
         
         const template = require(gen);
+        try {
         await template.generate(path,name,force);
+        } catch (error) {
+            console.error(error.message);
+        }
     }
 
     async usage(prefix='node generate.js ') {
