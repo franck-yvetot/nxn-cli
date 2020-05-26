@@ -30,6 +30,10 @@ module.exports = new MY_SCRIPT();
 
 class Generator
 {
+    name() {
+        return "script";
+    }
+
     usage(pad=' ') {
         return {
             usage:"APP COMMANDE",

@@ -19,6 +19,7 @@ class Generators {
         
         const template = require(gen);
         try {
+            console.log("generator "+template.name());
         await template.generate(path,name,force);
         } catch (error) {
             console.error(error.message);

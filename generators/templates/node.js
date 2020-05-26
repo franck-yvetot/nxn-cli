@@ -44,10 +44,22 @@ class MY_SCENode extends FlowNode
             debug.error(error.stack||error);
         }        
     }
-
 }
 
-module.exports = new MY_SCENode();
+class MY_SCENodeFactory
+{
+    constructor () {
+        this.instances={};
+    }
+    getInstance(instName) {
+        if(this.instances[instName])
+            return this.instances[instName];
+
+        return (this.instances[instName] = new MY_SCENode(instName));
+    }
+}
+
+module.exports = new MY_SCENodeFactory();
 `;
 
 
@@ -65,6 +77,10 @@ ${pad}The service can be configured if added to the "service/configuration" sect
         };
     }
 
+    name() {
+        return "node service";
+    }
+
     async generate(path,name,force) {
 
         let aName = name.split('/');
@@ -74,14 +90,14 @@ ${pad}The service can be configured if added to the "service/configuration" sect
         path = path+'/'+path2;
         
         basename = _path_.basename(basename);
-        let matches = basename.match('/([^.]+)[.]service/');
+        let matches = basename.match('/([^.]+)[.]node/');
         if(matches)
             basename=matches[1];
         
-        if(path.search('/services')==-1 && path.search('node_modules')==-1)
-            path = path+'/services';
+        if(path.search('/services')==-1 && path.search('/nodes')==-1 && path.search('node_modules')==-1)
+            path = path+'/nodes';
 
-        let fullPath = path+'/'+basename+'.service.js';
+        let fullPath = path+'/'+basename+'.node.js';
         fullPath = fullPath.replace("//","/");
 
         let s = template;
@@ -90,7 +106,7 @@ ${pad}The service can be configured if added to the "service/configuration" sect
         s = s.replace(/MY_SCE/g,Basename);
 
         if(await fs.existsFileAsync(fullPath) && (force!='force')) {
-            console.error("this service already exists");
+            console.error("this node service already exists");
             return false;
         }
 

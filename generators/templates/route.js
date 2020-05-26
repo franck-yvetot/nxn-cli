@@ -35,6 +35,10 @@ module.exports = new MY_ROUTESce();
 
 class Generator
 {
+    name() {
+        return "route";
+    }
+
     usage(pad=' ') {
         return {
             usage:"APP ROUTE",

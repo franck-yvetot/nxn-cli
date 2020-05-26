@@ -24,6 +24,10 @@ module.exports = new MY_SCESce();
 
 class Generator
 {
+    name() {
+        return "service";
+    }
+
     usage(pad=' ') {
         return {
             usage:"APP SCE",

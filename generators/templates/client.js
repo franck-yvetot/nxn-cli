@@ -58,6 +58,10 @@ class CltGenerator
 
     }
 
+    name() {
+        return "client";
+    }
+
     usage(pad) {
         return {
             usage:"CLT_NAME",
