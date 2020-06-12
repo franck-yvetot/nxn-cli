@@ -8,15 +8,14 @@ const FlowNode = require("@nxn/boot/node");
 
 class MY_SCENode extends FlowNode
 {
-    constructor() {
-        super();
+    constructor(instName) {
+        super(instName);
     }
 
-    async init(config,ctxt,...receivers) {
-        if(!this.config)
-            this.config = config;
+    async init(config,ctxt,...injections) {
+        super.init(config,ctxt,injections);        
 
-        this.registerReceivers(receivers);
+        // add specific node data here
     }
 
     name() {

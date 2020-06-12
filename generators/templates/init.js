@@ -3,8 +3,6 @@ const _path_ = require('path');
 const strings = require('@nxn/ext/string.service');
 
 const template = `{
-    $variables:
-        PORT: 3000
     "middleware" : 
     {
         "defaultPath":"@nxn/boot/middleware/$id",
@@ -12,7 +10,7 @@ const template = `{
 
         "configuration" : {
             "express":{
-                "port":\${PORT},
+                "port":3000,
                 "message":"Express server run on port"
             },
 
@@ -25,22 +23,13 @@ const template = `{
 
             "debug" : {
                 "path" : "@nxn/debug",
-                "DEBUG": "*",
+                "DEBUG": "*,-VIDEO_SCE:Parser,VIDEO_SCE:Index,-retry-request,-GBUCKET,",
                 "DEBUG_COLORS":1
             }
         }
     },
 
     "services" : {
-        "defaultPath":"",
-        
-        "load" : "",
-
-        "configuration" : {
-        }
-    },
-    
-    "nodes" : {
         "defaultPath":"",
         
         "load" : "",
@@ -63,34 +52,6 @@ const template = `{
 }
 `;
 
-const appT = `
-// module alias : allow access to applications services from config files
-// install : npm i --save module-alias
-const {configSce,bootSce} = require("@nxn/boot");
-
-// init config reader from client data
-var myArgs = process.argv.slice(2);
-let client = myArgs[0] || 'default';
-global.__clientDir = \`\${__dirname}/client_data/\${client}/\`;
-
-// directory where to store temporary files used for a client app
-// should not be gittable
-global.__dataDir = `${__clientDir}/.data/`;
-
-// get variables to be injected into the config as \${my_variable}
-// variables are dependent from the environment
-const env = myArgs[2] || process.env.NODE_ENV;
-const configPath = [__clientDir+'/env/'+env,__clientDir,__dirname];
-
-
-// read main config defining the modules (middleware, services, nodes, run, test)
-let configName = myArgs[1] || 'config';
-if(configName.search(/[.](json|ya?ml)/)==-1)
-    configName = 'config_'+configName;
-
-bootSce.run(configName,configPath);
-`;
-
 class CltGenerator
 {
     init(config) {
@@ -110,31 +71,7 @@ pad+`Create a client directory in /client_data and adds a default config file in
         };
     }
 
-
-    async generateApp(path,force) {
-
-        let fullPath = path+='/index.js';
-        fullPath = fullPath.replace("//","/");
-
-        let s = appT;
-        if(await fs.existsFileAsync(fullPath) && (force!='force')) {
-            console.error("this index.js already exists "+fullPath);
-            return false;
-        }
-
-        try {
-            fs.writeFileAsync(fullPath,s,true);    
-        } catch (error) {
-            console.error(error);
-        }
-
-        console.log("Generated client data folder "+fullPath);
-        return true;
-    }
-
     async generate(path,name,force) {
-
-        this.generateApp(path,force);
 
         let fullPath = path+='/client_data/'+name+'/config.json';
         fullPath = fullPath.replace("//","/");
