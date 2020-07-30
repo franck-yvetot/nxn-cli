@@ -25,6 +25,6 @@
   "homepage": "https://github.com/franck-yvetot/nxn-cli#readme",
   "dependencies": {
     "@nxn/ext": "^1.0.12",
-    "@nxn/files": "^1.0.4"
+    "@nxn/files": "^1.0.7"
   }
 }
