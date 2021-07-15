@@ -1,13 +1,13 @@
 {
   "name": "@nxn/cli",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "generators for applications based on nxn components",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "nxg": "./index.js"
+    "nxg": "index.js"
   },
   "repository": {
     "type": "git",
