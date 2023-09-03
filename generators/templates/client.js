@@ -75,7 +75,7 @@ global.__clientDir = \`\${__dirname}/client_data/\${client}/\`;
 
 // directory where to store temporary files used for a client app
 // should not be gittable
-global.__dataDir = `${__clientDir}/.data/`;
+global.__dataDir = __clientDir+"/.data/";
 
 // get variables to be injected into the config as \${my_variable}
 // variables are dependent from the environment
