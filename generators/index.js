@@ -4,6 +4,7 @@ const arrAsync = require("@nxn/ext/array.service");
 const templates = [
     'client',
     'service',
+    'factory',
     'node',
     'route',
     'script'
