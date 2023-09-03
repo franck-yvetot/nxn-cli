@@ -29,6 +29,8 @@ const run = async () => {
 
     let force = myArgs[3]||'';
 
+    console.log(`Generating type=${type}, name=${name}, path=${path}, force=${path}`);
+        
     generators.generate(type,path,name,force)
     .then(text => {
         console.log("end generator");
