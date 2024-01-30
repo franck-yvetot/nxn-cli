@@ -3,8 +3,10 @@ const _path_ = require('path');
 const strings = require('@nxn/ext/string.service');
 
 const template = `{
-    $variables:
-        PORT: 3000
+    "$variables": {
+        "PORT": 3000
+    },
+
     "middleware" : 
     {
         "defaultPath":"@nxn/boot/middleware/$id",
@@ -12,7 +14,7 @@ const template = `{
 
         "configuration" : {
             "express":{
-                "port":\${PORT},
+                "port":"\${PORT}",
                 "message":"Express server run on port"
             },
 
@@ -61,6 +63,51 @@ const template = `{
         "load" : "express"
     }
 }
+`;
+
+const template_yaml = `
+
+# add variables here to be used in config as "${VAR}"
+$variables:
+  PORT: 3000
+
+# express middleware section
+middleware:
+  defaultPath: "@nxn/boot/middleware/$id"
+  load: ENV,debug,express,CORS2,JSON
+  configuration:
+    express:
+      port: "${PORT}"
+      message: Express server run on port
+    cors2:
+      verbs: GET,POST,PUT,DELETE
+    env: {}
+    debug:
+      path: "@nxn/debug"
+      DEBUG: "*"
+      DEBUG_COLORS: 1
+
+# services components
+services:
+  load: 'all'
+  # defaultPath: applications/$id/services/$id.service
+  configuration:
+
+# nodes components (for processing chains)
+nodes:
+  load: '*'
+  configuration:
+
+# express routers
+routes:
+  # route default path
+  # defaultPath: applications/$id/routes/$id.route
+  load: '*'
+  configuration:
+
+# to be loaded at startup
+run:
+  load: express
 `;
 
 const appT = `
@@ -136,8 +183,13 @@ pad+`Create a client directory in /client_data and adds a default config file in
 
         this.generateApp(path,force);
 
-        let fullPath = path+='/client_data/'+name+'/config.json';
+        let fullDirPath = path;
+        let cltPath = path+'/client_data/'+name;
+
+        let fullPath = path+'/client_data/'+name+'/config_default.json';
         fullPath = fullPath.replace("//","/");
+
+        fs.copyDirSync("./default", cltPath);
 
         let s = template;
         if(await fs.existsFileAsync(fullPath) && (force!='force')) {

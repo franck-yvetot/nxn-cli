@@ -1,0 +1,41 @@
+# add variables here to be used in config as "${VAR}"
+$variables:
+  PORT: 3000
+
+# express middleware section
+middleware:
+  defaultPath: "@nxn/boot/middleware/$id"
+  load: ENV,debug,express,CORS2,JSON
+  configuration:
+    express:
+      port: "${PORT}"
+      message: Express server run on port
+    cors2:
+      verbs: GET,POST,PUT,DELETE
+    env: {}
+    debug:
+      path: "@nxn/debug"
+      DEBUG: "*"
+      DEBUG_COLORS: 1
+
+# services components
+services:
+  load: 'all'
+  # defaultPath: applications/$id/services/$id.service
+  configuration:
+
+# nodes components (for processing chains)
+nodes:
+  load: '*'
+  configuration:
+
+# express routers
+routes:
+  # route default path
+  # defaultPath: applications/$id/routes/$id.route
+  load: '*'
+  configuration:
+
+# to be loaded at startup
+run:
+  load: express
