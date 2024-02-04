@@ -19,8 +19,8 @@ class MY_SCE_TestSce extends FlowNode
         super.init(config,ctxt,injections);
 
         /** @type {import('../services/MY_SCE_BASE.service').MY_SCE} */
-        this.MY_SCE = 
-            this.getInjection('MY_SCE'); // get injection
+        this.MY_SCE_BASE = 
+            this.getInjection('MY_SCE_BASE'); // get injection
         
         if(!(config.active === false))
             this.run();
@@ -28,7 +28,7 @@ class MY_SCE_TestSce extends FlowNode
 
     isOk() 
     {
-        return this.MY_SCE && this.MY_SCE.isOk();
+        return this.MY_SCE_BASE && this.MY_SCE_BASE.isOk();
     }    
 
     async run() 
@@ -39,7 +39,7 @@ class MY_SCE_TestSce extends FlowNode
             await new Promise(resolve => setTimeout(resolve, 1000));
             
             // init tests data
-            let sce = this.MY_SCE;
+            let sce = this.MY_SCE_BASE;
 
             let token = this.config.token || ""; // use token from config if provided
 
