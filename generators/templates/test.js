@@ -18,7 +18,7 @@ class MY_SCE_TestSce extends FlowNode
     {
         super.init(config,ctxt,injections);
 
-        /** @type {import('../services/MY_SCE_BASE.service').MY_SCE} */
+        /** @type {import('../services/MY_SCE_BASE.service').MY_SCESce} */
         this.MY_SCE_BASE = 
             this.getInjection('MY_SCE_BASE'); // get injection
         
