@@ -20,8 +20,12 @@ class MY_SCESce extends FlowNode
 
         // get other injection
         this.otherSce = this.getInjection('other_sce');
-
     }
+
+    isOk() 
+    {
+        return this.otherSce && this.otherSce.isOk();
+    }    
 
     test(row) {
         console.log("test ok");
@@ -92,10 +96,10 @@ ${pad}The service can be configured if added to the "service/configuration" sect
             basename=matches[1];
         
         if(path.search('/services')==-1 && path.search('node_modules')==-1)
-            path = path+'/services';
+            path = path+'services';
 
         let fullPath = path+'/'+basename+'.service.js';
-        fullPath = fullPath.replace("//","/");
+        fullPath = fullPath.replace("[/][/]","/");
 
         let s = template;
         let Basename = strings.toCamelCase(basename,true);
@@ -113,7 +117,7 @@ ${pad}The service can be configured if added to the "service/configuration" sect
             console.error(error);
         }
 
-        console.log("Generated service "+fullPath);
+        console.log("Generated factory "+fullPath);
         return true;
     }
 }

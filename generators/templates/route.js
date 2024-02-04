@@ -1,26 +1,45 @@
 const fs = require('@nxn/files');
 
-const template = `
-const debug = require("@nxn/debug")('MY_ROUTE');
+const template = `const debug = require("@nxn/debug")('MY_ROUTE');
 
-class MY_ROUTESce 
+const FlowNode = require("@nxn/boot/node");
+
+class MY_ROUTERoute extends FlowNode
 {
     constructor() {
     }
 
-    init(config,express,injections)
+    init(config,express,...injections)
     {
-        const router = express.Router();
+        super.init(config,{express},injections);   
 
+        // URI
+        this.baseUri = this.config.url||'/';
+        debug.log("init MY_ROUTE routes  on "+baseUri);
+
+        // AUTH
+        // if not authenticated, remove this injection (here and in isOk() )
+        this.auth =  this.getInjection('auth');
+
+        // init routes
+        const router = express.Router();
         this.routes(router);
 
         return router;
     }
 
+    isOk() 
+    {
+        return this.baseUri && this.auth && this.auth?.isOk();
+    }
+
     // init routes
     routes(router) 
     {
-        router.get('/', async (req, res)=> {
+        const auth = this.auth;
+
+        // endpoint w/ auth
+        router.get('/', auth.authenticate(), async (req, res)=> {
 
             try {
                 
@@ -33,10 +52,25 @@ class MY_ROUTESce
                 debug.error(error.stack||error);
             }    
         });
+
+        // endpoint w/o auth
+        router.get('/xx', auth.authenticate(), async (req, res)=> {
+
+            try {
+                
+                res.send("OK");    
+            }
+            catch(error) {
+                let message = error.message || error;
+                let code = parseInt(error.code||500, 10) || 500;
+                res.status(code).send({code,error:message});
+                debug.error(error.stack||error);
+            }    
+        });        
     }
 }
 
-module.exports = new MY_ROUTESce();
+module.exports = new MY_ROUTERoute();
 `;
 
 class Generator

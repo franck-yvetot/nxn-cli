@@ -19,7 +19,7 @@ const run = async () => {
     let type = myArgs[0];
     let name = myArgs[1];
 
-    let path=(myArgs[2]||'')+'/';
+    let path=(myArgs[2]||'');
     if((type!="client") && (path.search('application')==-1))
         path = '/applications/'+path;
         

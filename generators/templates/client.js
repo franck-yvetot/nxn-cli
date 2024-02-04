@@ -67,7 +67,7 @@ const template = `{
 
 const template_yaml = `
 
-# add variables here to be used in config as "${VAR}"
+# add variables here to be used in config"
 $variables:
   PORT: 3000
 
@@ -77,7 +77,7 @@ middleware:
   load: ENV,debug,express,CORS2,JSON
   configuration:
     express:
-      port: "${PORT}"
+      port: "\${PORT}"
       message: Express server run on port
     cors2:
       verbs: GET,POST,PUT,DELETE

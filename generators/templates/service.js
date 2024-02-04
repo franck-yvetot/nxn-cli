@@ -2,7 +2,8 @@ const fs = require('@nxn/files');
 const _path_ = require('path');
 const strings = require('@nxn/ext/string.service');
 
-const template = `const debug = require("@nxn/debug")('MY_SCE');
+const template = `// @ts-check
+const debug = require("@nxn/debug")('MY_SCE');
 
 const FlowNode = require("@nxn/boot/node");
 
@@ -13,6 +14,7 @@ class MY_SCESce extends FlowNode
         super(instName);
     }
 
+    /** init the service with a config */
     async init(config,ctxt,...injections) {
         super.init(config,ctxt,injections); 
 
@@ -21,6 +23,11 @@ class MY_SCESce extends FlowNode
         // get other injection
         this.otherSce = this.getInjection('other_sce');
 
+    }
+
+    isOk() 
+    {
+        return this.otherSce && this.otherSce.isOk();
     }
 
     test(row) {

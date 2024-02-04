@@ -26,6 +26,11 @@ class MY_SCE_TestSce extends FlowNode
             this.run();
     }
 
+    isOk() 
+    {
+        return this.MY_SCE && this.MY_SCE.isOk();
+    }    
+
     async run() 
     {
         try 

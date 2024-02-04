@@ -7,6 +7,7 @@ const templates = [
     'factory',
     'node',
     'route',
+    'test',
     'script'
 ]
 
