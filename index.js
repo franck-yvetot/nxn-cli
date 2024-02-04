@@ -2,8 +2,13 @@
 
 const generators = require("./generators");
 
+const { execSync } = require('child_process');
+const npmVersion = execSync('npm --version').toString().trim();
+
 const run = async () => {
 
+    console.log(`npm version: ${npmVersion}`);
+        
     var myArgs = process.argv.slice(2);
     if(myArgs.length<2)
     {
