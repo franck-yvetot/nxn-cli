@@ -18,7 +18,7 @@ class MY_SCE_TestSce extends FlowNode
     {
         super.init(config,ctxt,injections);
 
-        /** @type {import('../services/glabels.service').GlabelsSce} */
+        /** @type {import('../services/MY_SCE_BASE.service').MY_SCE} */
         this.MY_SCE = 
             this.getInjection('MY_SCE'); // get injection
         
@@ -114,6 +114,10 @@ ${pad}The service can be configured if added to the "service/configuration" sect
         let s = template;
         let Basename = strings.toCamelCase(basename,true);
 
+        // replace path name
+        s = s.replace(/MY_SCE_BASE/g,basename);
+
+        // replace class name
         s = s.replace(/MY_SCE/g,Basename);
 
         if(await fs.existsFileAsync(fullPath) && (force!='force')) {

@@ -1,4 +1,6 @@
 const fs = require('@nxn/files');
+const _path_ = require('path');
+const strings = require('@nxn/ext/string.service');
 
 const template = `
 const debug = require("@nxn/debug")('MY_SCRIPT');

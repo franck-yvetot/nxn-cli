@@ -1,4 +1,6 @@
 const fs = require('@nxn/files');
+const _path_ = require('path');
+const strings = require('@nxn/ext/string.service');
 
 const template = `const debug = require("@nxn/debug")('MY_ROUTE');
 
@@ -92,33 +94,44 @@ ${pad}The route can be configured if added to the "routes/configuration" section
         };
     }
 
-    async generate(path,name,force) {
+    async generate(path,name,force) 
+    {
+        let aName = name.split('/');
+        let basename = aName.pop();
 
-    var s = template;
-    s = s.replace(/MY_ROUTE/g,name);
+        var s = template;
 
-    if(path.search('application')==-1)
-        path = '/applications/'+path;
+        let Basename = strings.toCamelCase(basename,true);
 
-    if(path.search('/routes')==-1)
-        path = path+'/routes';
+        // replace path name
+        s = s.replace(/MY_ROUTE_BASE/g,basename);
 
-    let fullPath = path+'/'+name+'.route.js';
-    fullPath = fullPath.replace("//","/");
-    
-    if(await fs.existsFileAsync(fullPath) && (force!='force')) {
-        console.error("this route already exists");
-        return false;
-    }
+        // replace class name
+        s = s.replace(/MY_ROUTE/g,Basename);
 
-    try {
-        fs.writeFileAsync(fullPath,s,true);    
-    } catch (error) {
-        console.error(error);
-    }
 
-    console.log("Generated route "+fullPath);
-    return true;
+        if(path.search('application')==-1)
+            path = '/applications/'+path;
+
+        if(path.search('/routes')==-1)
+            path = path+'/routes';
+
+        let fullPath = path+'/'+name+'.route.js';
+        fullPath = fullPath.replace("//","/");
+        
+        if(await fs.existsFileAsync(fullPath) && (force!='force')) {
+            console.error("this route already exists");
+            return false;
+        }
+
+        try {
+            fs.writeFileAsync(fullPath,s,true);    
+        } catch (error) {
+            console.error(error);
+        }
+
+        console.log("Generated route "+fullPath);
+        return true;
     }
 }
 
