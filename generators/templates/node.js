@@ -66,9 +66,9 @@ class Generator
 {
     usage(pad=' ') {
         return {
-            usage:"APP SCE",
+            usage:"SCE APP",
             description:
-pad+`adds a flow node class in an application, code is generated in /applications/APP/SCE.service.js,
+pad+`adds a flow node class in an application, code is generated in /applications/APP/nodes/SCE.service.js,
 ${pad}where APP and SCE are the names of the application and service.
 ${pad}The application folder is created if it doesn't exist yet.
 ${pad}The service can be configured if added to the "service/configuration" section of the config file in the client data.

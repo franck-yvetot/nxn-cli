@@ -4,14 +4,23 @@ const strings = require('@nxn/ext/string.service');
 
 const template = `const debug = require("@nxn/debug")('MY_SCE');
 
-class MY_SCESce
+const FlowNode = require("@nxn/boot/node");
+
+/** my service description here */
+class MY_SCESce extends FlowNode
 {
-    constructor() {
-        this.config = {};
+    constructor(instName) {
+        super(instName);
     }
 
-    init(config) {
-        this.config = config;
+    async init(config,ctxt,...injections) {
+        super.init(config,ctxt,injections); 
+
+        // your service initialisation code here
+
+        // get other injection
+        this.otherSce = this.getInjection('other_sce');
+
     }
 
     test(row) {
@@ -20,6 +29,9 @@ class MY_SCESce
 }
 
 module.exports = new MY_SCESce();
+
+// export types for jsdoc type checks
+module.exports.MY_SCESce = MY_SCESce;
 `;
 
 class Generator

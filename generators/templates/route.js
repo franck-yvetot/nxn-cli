@@ -12,6 +12,14 @@ class MY_ROUTESce
     {
         const router = express.Router();
 
+        this.routes(router);
+
+        return router;
+    }
+
+    // init routes
+    routes(router) 
+    {
         router.get('/', async (req, res)=> {
 
             try {
@@ -24,9 +32,7 @@ class MY_ROUTESce
                 res.status(code).send({code,error:message});
                 debug.error(error.stack||error);
             }    
-        });        
-
-        return router;
+        });
     }
 }
 
@@ -41,7 +47,7 @@ class Generator
 
     usage(pad=' ') {
         return {
-            usage:"APP ROUTE",
+            usage:"ROUTE APP",
             description:
 pad+`adds a router class in an application, code is generated in /applications/APP/routes/ROUTE.service.js,
 ${pad}where APP and ROUTE are the names of the application and route.

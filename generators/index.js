@@ -19,10 +19,13 @@ class Generators {
             throw new Error("template does not exist for type "+type);
         
         const template = require(gen);
-        try {
+        try 
+        {
             console.log("generator "+template.name());
-        await template.generate(path,name,force);
-        } catch (error) {
+            await template.generate(path,name,force);
+        } 
+        catch (error) 
+        {
             console.error(error.message);
         }
     }

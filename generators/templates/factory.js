@@ -67,9 +67,9 @@ class Generator
 
     usage(pad=' ') {
         return {
-            usage:"APP SCE",
+            usage:"SCE APP",
             description:
-pad+`adds a service class in an application, code is generated in /applications/APP/SCE.service.js,
+pad+`adds a service class in an application, code is generated in /applications/APP/services/SCE.service.js,
 ${pad}where APP and SCE are the names of the application and service. A factory is generated for 
 ${pad} getting multiple instances of a service.
 ${pad}The application folder is created if it doesn't exist yet.
