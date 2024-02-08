@@ -9,6 +9,7 @@ const FlowNode = require("@nxn/boot/node");
 class MY_ROUTERoute extends FlowNode
 {
     constructor() {
+        super();
     }
 
     init(config,express,...injections)
@@ -17,11 +18,13 @@ class MY_ROUTERoute extends FlowNode
 
         // URI
         this.baseUri = this.config.url||'/';
-        debug.log("init MY_ROUTE routes  on "+baseUri);
+        debug.log("init MY_ROUTE routes  on "+this.baseUri);
 
         // AUTH
         // if not authenticated, remove this injection (here and in isOk() )
-        this.auth =  this.getInjection('auth');
+        this.auth =  this.getInjection('auth') || 
+            { authenticate:(req,res,next)=>{ return (req,res,next) => { next(); }} }
+
 
         // init routes
         const router = express.Router();
