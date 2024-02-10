@@ -71,8 +71,9 @@ pad+`Create a client directory in /client_data and adds a default config file in
         };
     }
 
-    async generate(path,name,force) {
-
+    async generate(params) 
+    {
+        const {name,force,path} = params;
         let fullPath = path+='/client_data/'+name+'/config.json';
         fullPath = fullPath.replace("//","/");
 

@@ -48,7 +48,9 @@ ${pad}The command can be executed if added to the "run/configuration" section of
         };
     }
 
-    async generate(path,name,force) {
+    async generate(params) 
+    {
+        const {name,force,path} = params;
         let aName = name.split('/');
         let basename = aName.pop();
 

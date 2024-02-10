@@ -97,8 +97,10 @@ ${pad}The route can be configured if added to the "routes/configuration" section
         };
     }
 
-    async generate(path,name,force) 
+    async generate(params) 
     {
+        const {name,force,path} = params;
+
         let aName = name.split('/');
         let basename = aName.pop();
 

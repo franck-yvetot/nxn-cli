@@ -27,30 +27,16 @@ const run = async () => {
     let path=(myArgs[1]||'');
     if((type!="client") && (path.search('application')==-1))
         path = '/applications/'+path;
-
-    if(type == 'client')
-        name = myArgs[1];    
         
     path = process.cwd()+'/'+path;
+
     path = path.replace("//","/");
 
     let force = myArgs[3]||'';
 
-    let params = {
-        type,
-        name,
-        path,
+    console.log(`Generating type=${type}, name=${name}, path=${path}, force=${path}`);
         
-        srcDir : __dirname,
-        toDir : process.cwd()+'/',
-        force,
-        args: myArgs
-    }
-
-    console.log(`Generating type=${type}, name=${name}, path=${path}, force=${force}`);
-        
-    // generators.generate(type,path,name,force)
-    generators.generate(type,params)
+    generators.generate(type,path,name,force)
     .then(text => {
         console.log("end generator");
     })

@@ -179,9 +179,7 @@ pad+`Create a client directory in /client_data and adds a default config file in
         return true;
     }
 
-    async generate(params) 
-    {
-        const {name,force,args,path} = params;
+    async generate(path,name,force) {
 
         this.generateApp(path,force);
 
@@ -191,10 +189,7 @@ pad+`Create a client directory in /client_data and adds a default config file in
         let fullPath = path+'/client_data/'+name+'/config_default.json';
         fullPath = fullPath.replace("//","/");
 
-        fs.copyDirSync(
-            params.srcDir+"/generators/templates/default/", 
-            params.toDir,
-            params.force);
+        fs.copyDirSync("./default", cltPath);
 
         let s = template;
         if(await fs.existsFileAsync(fullPath) && (force!='force')) {

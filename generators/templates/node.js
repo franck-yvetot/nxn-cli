@@ -80,8 +80,9 @@ ${pad}The service can be configured if added to the "service/configuration" sect
         return "node service";
     }
 
-    async generate(path,name,force) {
-
+    async generate(params) 
+    {
+        const {name,force,path} = params;
         let aName = name.split('/');
         let basename = aName.pop();
 
