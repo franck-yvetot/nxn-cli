@@ -16,7 +16,7 @@ class Generators {
     // async generate(type,path,name,force=false) {
     async generate(type,params) 
     {
-        const gen = __dirname+'/templates/'+type+'.js';
+        const gen = __dirname+'/'+type+'.js';
 
         if(!await file.existsFileAsync(gen))
             throw new Error("template does not exist for type "+type);
@@ -30,7 +30,7 @@ class Generators {
         } 
         catch (error) 
         {
-            console.error(error.message);
+            console.error(error.message,error.stack);
         }
     }
 
@@ -39,7 +39,7 @@ class Generators {
 
         await arrAsync.forEachAsync(templates,
             async (type) => {
-            const scePath = __dirname+'/templates/'+type+'.js';
+            const scePath = __dirname+'/'+type+'.js';
 
             if(!await file.existsFileAsync(scePath))
                 return;              

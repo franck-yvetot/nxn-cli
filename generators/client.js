@@ -179,8 +179,11 @@ pad+`Create a client directory in /client_data and adds a default config file in
         return true;
     }
 
-    async generate(path,name,force) {
+    async generate(params) 
+    {
+        const {name,force,args,path} = params;
 
+        /*
         this.generateApp(path,force);
 
         let fullDirPath = path;
@@ -188,9 +191,8 @@ pad+`Create a client directory in /client_data and adds a default config file in
 
         let fullPath = path+'/client_data/'+name+'/config_default.json';
         fullPath = fullPath.replace("//","/");
-
-        fs.copyDirSync("./default", cltPath);
-
+        */
+        /*
         let s = template;
         if(await fs.existsFileAsync(fullPath) && (force!='force')) {
             console.error("this client configuration already exists in "+fullPath);
@@ -200,6 +202,19 @@ pad+`Create a client directory in /client_data and adds a default config file in
         try {
             fs.writeFileAsync(fullPath,s,true);    
         } catch (error) {
+            console.error(error);
+        }
+        */
+
+        try 
+        {
+            fs.copyDirSync(
+                params.srcDir+"/generators/templates/default/", 
+                params.toDir,
+                params.force);
+        } 
+        catch (error) 
+        {
             console.error(error);
         }
 

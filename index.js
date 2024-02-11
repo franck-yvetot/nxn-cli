@@ -10,7 +10,7 @@ const run = async () => {
     console.log(`npm version: ${npmVersion}`);
         
     var myArgs = process.argv.slice(2);
-    if(myArgs.length<2)
+    if(myArgs.length<2 && myArgs[0]!="init")
     {
         console.error("This tool generates code. The general form is :\nnode generate.js <type> <other params>\n\n");
 
@@ -21,8 +21,8 @@ const run = async () => {
         return;
     }
 
-    let type = myArgs[0];
     let name = myArgs[2];
+    let type = myArgs[0];
 
     let path=(myArgs[1]||'');
     if((type!="client") && (path.search('application')==-1))
@@ -40,7 +40,7 @@ const run = async () => {
         type,
         name,
         path,
-        
+
         srcDir : __dirname,
         toDir : process.cwd()+'/',
         force,

@@ -1,6 +1,7 @@
 const fs = require('@nxn/files');
 const _path_ = require('path');
 const strings = require('@nxn/ext/string.service');
+const BaseGenerator = require("./_baseGenerator")
 
 const template = `const debug = require("@nxn/debug")('MY_ROUTE');
 
@@ -78,7 +79,7 @@ class MY_ROUTERoute extends FlowNode
 module.exports = new MY_ROUTERoute();
 `;
 
-class Generator
+class Generator extends BaseGenerator
 {
     name() {
         return "route";
@@ -99,7 +100,7 @@ ${pad}The route can be configured if added to the "routes/configuration" section
 
     async generate(params) 
     {
-        const {name,force,path} = params;
+        let {name,force,path} = params;
 
         let aName = name.split('/');
         let basename = aName.pop();
@@ -134,6 +135,15 @@ ${pad}The route can be configured if added to the "routes/configuration" section
         } catch (error) {
             console.error(error);
         }
+
+        // now update main configuration
+        let app = params.args[1];
+        let upath = basename+"@"+app;
+        let sce = {
+            upath,
+            url:"/"+app+"/"+basename
+        }
+        await this.addToConfig(basename+"_route", sce,"routes",params);
 
         console.log("Generated route "+fullPath);
         return true;

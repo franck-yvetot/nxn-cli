@@ -1,6 +1,7 @@
 const fs = require('@nxn/files');
 const _path_ = require('path');
 const strings = require('@nxn/ext/string.service');
+const BaseGenerator = require("./_baseGenerator")
 
 const template = `
 const debug = require("@nxn/debug")('MY_SCE');
@@ -62,7 +63,7 @@ module.exports = new MY_SCENodeFactory();
 `;
 
 
-class Generator
+class Generator extends BaseGenerator
 {
     usage(pad=' ') {
         return {
@@ -82,7 +83,7 @@ ${pad}The service can be configured if added to the "service/configuration" sect
 
     async generate(params) 
     {
-        const {name,force,path} = params;
+        let {name,force,path} = params;
         let aName = name.split('/');
         let basename = aName.pop();
 
@@ -115,6 +116,14 @@ ${pad}The service can be configured if added to the "service/configuration" sect
         } catch (error) {
             console.error(error);
         }
+
+        // now update main configuration
+        let app = params.args[1];
+        let upath = basename+"@"+app;
+        let sce = {
+            upath,
+        }
+        await this.addToConfig(basename+"_node", sce,"nodes",params);        
 
         console.log("Generated node service "+fullPath);
         return true;
