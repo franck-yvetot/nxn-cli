@@ -24,12 +24,12 @@ class MY_SCESce extends FlowNode
 
         // get other injection
         this.otherSce = this.getInjection('other_sce');
-
     }
 
     isOk() 
     {
-        return this.otherSce && this.otherSce.isOk();
+        // return this.otherSce && this.otherSce.isOk();
+        return super.isOk();
     }
 
     test(row) {
