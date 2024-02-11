@@ -26,6 +26,7 @@
   "dependencies": {
     "@nxn/cli": "^1.0.25",
     "@nxn/ext": "^1.0.12",
-    "@nxn/files": "^1.0.7"
+    "@nxn/files": "^1.0.7",
+    "js-yaml": "^4.1.0"
   }
 }
