@@ -43,7 +43,7 @@ class BaseGenerator
         }
 
         // Convert the YAML object back to YAML string
-        let content3 = yaml.safeDump(yamlObj,{quotingType:'"'});        
+        let content3 = yaml.dump(yamlObj,{quotingType:'"'});        
 
         let content4 = this.restoreComments(content3);
 
