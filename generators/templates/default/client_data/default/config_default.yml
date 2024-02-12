@@ -21,7 +21,6 @@ middleware:
 # services components
 services:
   load: 'all'
-  # defaultPath: applications/$id/services/$id.service
   configuration:
 
 # nodes components (for processing chains)
@@ -32,7 +31,6 @@ nodes:
 # express routers
 routes:
   # route default path
-  # defaultPath: applications/$id/routes/$id.route
   load: '*'
   configuration:
 
