@@ -48,7 +48,7 @@ class MY_SCE_TestSce extends FlowNode
             let user = {email:"me@mondomaine.com", gToken:null};
 
             // search for groups starting with dev
-            debug.log("test 0 : list labels");   
+            debug.log("test 0 : executing...");
             try 
             {
                 assert.ok(sce,"sce injection not valid");

@@ -25,7 +25,7 @@ class BaseGenerator
         }
         
         // Parse YAML
-        const yamlObj = yaml.safeLoad(content2);
+        const yamlObj = yaml.load(content2);
         
         // add object to section
         if(!yamlObj[section])
