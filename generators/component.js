@@ -48,12 +48,15 @@ class ComponentGenerator
         let basename = aName.pop();
 
         var s = template;
-        
+
         // replace path name
         s = s.replace(/MY_COMPONENT/g,basename);
 
         if(path.search('application')==-1)
             path = '/applications/'+path;
+
+        if(path.search('/config')==-1)
+            path = path+'/config';
 
         if(path.search('/components')==-1)
             path = path+'/components';
