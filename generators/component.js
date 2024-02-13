@@ -58,9 +58,6 @@ class ComponentGenerator
         if(path.search('/config')==-1)
             path = path+'/config';
 
-        if(path.search('/components')==-1)
-            path = path+'/components';
-
         let fullPath = path+'/'+name+'.component.yml';
         fullPath = fullPath.replace("//","/");
         
