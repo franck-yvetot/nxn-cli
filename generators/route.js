@@ -87,7 +87,7 @@ class Generator extends BaseGenerator
 
     usage(pad=' ') {
         return {
-            usage:"ROUTE APP",
+            usage:"APP ROUTE",
             description:
 pad+`adds a router class in an application, code is generated in /applications/APP/routes/ROUTE.service.js,
 ${pad}where APP and ROUTE are the names of the application and route.

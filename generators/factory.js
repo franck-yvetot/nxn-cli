@@ -72,7 +72,7 @@ class Generator extends BaseGenerator
 
     usage(pad=' ') {
         return {
-            usage:"SCE APP",
+            usage:"APP SCE",
             description:
 pad+`adds a service class in an application, code is generated in /applications/APP/services/SCE.service.js,
 ${pad}where APP and SCE are the names of the application and service. A factory is generated for 
