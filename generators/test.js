@@ -139,7 +139,12 @@ ${pad}The service can be configured if added to the "service/configuration" sect
         let upath = basename+"@"+app;
         let sce = {
             upath,
+            injections:
+            {
+                basename:basename
+            }            
         }
+        
         await this.addToConfig(basename+"_test", sce,"tests",params);
 
         console.log("Generated test service "+fullPath);
