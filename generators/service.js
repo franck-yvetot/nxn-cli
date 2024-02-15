@@ -63,7 +63,7 @@ ${pad}The service can be configured if added to the "service/configuration" sect
 
     async generate(params) 
     {
-        let {name,force,path} = params;
+        let {name,appId,force,path} = params;
 
         let aName = name.split('/');
         let basename = aName.pop();
@@ -89,13 +89,15 @@ ${pad}The service can be configured if added to the "service/configuration" sect
 
         if(await fs.existsFileAsync(fullPath) && (force!='force')) {
             console.error("this service already exists");
-            return false;
+            // return false;
         }
-
-        try {
-            fs.writeFileAsync(fullPath,s,true);    
-        } catch (error) {
-            console.error(error);
+        else
+        {
+            try {
+                await fs.writeFileAsync(fullPath,s,true);    
+            } catch (error) {
+                console.error(error);
+            }    
         }
 
         // now update main configuration
@@ -104,6 +106,7 @@ ${pad}The service can be configured if added to the "service/configuration" sect
         let sce = {
             upath,
         }
+
         await this.addToConfig(basename, sce,"services",params);
 
         console.log("Generated service "+fullPath);

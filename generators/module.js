@@ -11,17 +11,16 @@ class ComponentGenerator extends BaseGenerator
     usage(pad=' ') 
     {
         return {
-                usage:"APP COMPONENT_NAME",
+                usage:"MODULE_NAME@APP",
                 description:
-    pad+`adds a component configuration in YML in an application.
+    pad+`adds a module configuration in YML in an application.
     ${pad}The application folder is created if it doesn't exist yet.
-    ${pad}The service can be configured if added to the "service/configuration" section of the config file in the client data.
     `
             };
     }
     
     name() {
-        return "component";
+        return "module";
     }
 
     async generate(params) 
@@ -34,7 +33,7 @@ class ComponentGenerator extends BaseGenerator
 
         let forceCreate = (force == 'force');
 
-        await this.createComponent(basename,appId,"component",forceCreate);
+        await this.createComponent(basename,appId,"module",forceCreate);
 
         return true;
     }

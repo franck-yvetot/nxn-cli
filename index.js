@@ -21,10 +21,28 @@ const run = async () => {
         return;
     }
 
-    let name = myArgs[2];
     let type = myArgs[0];
 
-    let path=(myArgs[1]||'');
+    let appId;
+    let name = myArgs[1];
+    let force;
+    
+    aNames = name.split("@");
+    if(aNames.length > 1)
+    {
+        name = aNames[0];
+        appId = aNames[1];
+        force = myArgs[2]||'';
+    }
+    else
+    {
+        // name = 
+        name  = myArgs[2];
+        appId = myArgs[1] || '';
+        force = myArgs[3] || '';        
+    }
+
+    let path = appId;
     if((type!="client") && (path.search('application')==-1))
         path = '/applications/'+path;
 
@@ -34,11 +52,10 @@ const run = async () => {
     path = process.cwd()+'/'+path;
     path = path.replace("//","/");
 
-    let force = myArgs[3]||'';
-
     let params = {
         type,
         name,
+        appId,
         path,
 
         srcDir : __dirname,
