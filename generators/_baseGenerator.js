@@ -32,7 +32,7 @@ class BaseGenerator
             return await this.addToComponent(name, obj,section,params,"component",name);
         }
 
-        if(await this.createComponent(appId,appId,"module"))
+        if(false &&  await this.createComponent(appId,appId,"module"))
         {
             return await this.addToComponent(name, obj,section,params,"module",appId);
         }
@@ -174,19 +174,32 @@ class BaseGenerator
      */
     restoreComments(yamlString) 
     {
-        const commentRegex = /COMMENT__(\d+):[\s]+["']?(.*)["']?/g;
+        const commentRegex = /COMMENT__(\d+):[\s]+["']?(.*)(["']?[ ]*)$/gm;
+        let restoredYamlString = yamlString;
+        let match;
+        while ((match = commentRegex.exec(yamlString)) !== null) {
+            const line = match[0];
+            const comment = match[2];
+            const restoredComment = `# ${comment}`;
+            restoredYamlString = restoredYamlString.replace(line, restoredComment,"");
+        }
+        return restoredYamlString;
+    }
+
+    restoreComments2(yamlString) {
+        const commentRegex = /COMMENT__(\d+):\s*["']?(.*?)["']?\s*$/gm;
         let restoredYamlString = yamlString;
         let match;
         while ((match = commentRegex.exec(yamlString)) !== null) {
             const index = match[1];
             const comment = match[2];
-            const placeholder = `COMMENT__${index}:[ ]+["']?(.*)["']?`;
-            const re2 = new RegExp(placeholder);
+            const placeholder = `COMMENT__${index}: ["']?${comment}["']?`;
+            const re2 = new RegExp(placeholder, 'g');
             const restoredComment = `# ${comment}`;
-            restoredYamlString = restoredYamlString.replace(re2, restoredComment,"g");
+            restoredYamlString = restoredYamlString.replace(re2, restoredComment);
         }
         return restoredYamlString;
-    }
+    }    
 
     /**
      * get application path

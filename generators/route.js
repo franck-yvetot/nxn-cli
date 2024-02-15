@@ -137,7 +137,7 @@ ${pad}The route can be configured if added to the "routes/configuration" section
         }
 
         // now update main configuration
-        let app = params.args[1];
+        let app = params.appId;
         let upath = basename+"@"+app;
         let sce = {
             upath,

@@ -95,7 +95,7 @@ ${pad}The service can be configured if added to the "service/configuration" sect
 
     async generate(params) 
     {
-        let {name,force,path} = params;
+        let {name,appId,force,path} = params;
 
         let aName = name.split('/');
         let basename = aName.pop();
@@ -135,7 +135,7 @@ ${pad}The service can be configured if added to the "service/configuration" sect
         }
 
         // now update main configuration
-        let app = params.args[1];
+        let app = params.appId;
         let upath = basename+"@"+app;
         let sce = {
             upath,
