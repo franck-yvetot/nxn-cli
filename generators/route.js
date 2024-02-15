@@ -127,13 +127,15 @@ ${pad}The route can be configured if added to the "routes/configuration" section
         
         if(await fs.existsFileAsync(fullPath) && (force!='force')) {
             console.error("this route already exists");
-            return false;
         }
-
-        try {
-            fs.writeFileAsync(fullPath,s,true);    
-        } catch (error) {
-            console.error(error);
+        else
+        {
+            try 
+            {
+                fs.writeFileAsync(fullPath,s,true);    
+            } catch (error) {
+                console.error(error);
+            }
         }
 
         // now update main configuration

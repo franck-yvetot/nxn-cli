@@ -123,15 +123,16 @@ ${pad}The service can be configured if added to the "service/configuration" sect
         // replace class name
         s = s.replace(/MY_SCE/g,Basename);
 
-        if(await fs.existsFileAsync(fullPath) && (force!='force')) {
+        if(await fs.existsFileAsync(fullPath) && (force!='force')) 
+        {
             console.error("this test service already exists");
-            return false;
         }
-
-        try {
-            fs.writeFileAsync(fullPath,s,true);    
-        } catch (error) {
-            console.error(error);
+        else {
+            try {
+                fs.writeFileAsync(fullPath,s,true);    
+            } catch (error) {
+                console.error(error);
+            }    
         }
 
         // now update main configuration
