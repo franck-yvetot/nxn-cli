@@ -2,24 +2,40 @@
 $variables:
   PORT: ${{PORT||3000}}
 
-# services components
+# ---------------------
+#
+#   services components
+#
+# ---------------------
 services:
   load: 'all'
   configuration:
 
-# nodes components (for processing chains)
-nodes:
-  load: '*'
-  configuration:
-
+# ---------------------
+#
 # express routers
+#
+# ---------------------
 routes:
   # route default path
   load: '*'
   configuration:
 
+# ---------------------
+#
 # to be loaded at startup
+#
+# ---------------------
 run:
+  load: express
+
+# ---------------------
+#
+# Tests 
+# (launched if env TEST=true)
+#
+# ---------------------
+tests:
   load: express
 
 # express middleware section
