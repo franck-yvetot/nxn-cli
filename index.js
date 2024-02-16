@@ -27,23 +27,31 @@ const run = async () => {
     let name = myArgs[1];
     let force;
     
-    aNames = name.split("@");
-    if(aNames.length > 1)
+    if(type != 'init' && type != 'client' )
     {
-        name = aNames[0];
-        appId = aNames[1];
-        force = myArgs[2]||'';
+        aNames = name.split("@");
+        if(aNames.length > 1)
+        {
+            name = aNames[0];
+            appId = aNames[1];
+            force = myArgs[2]||'';
+        }
+        else
+        {
+            // name = 
+            name  = myArgs[2];
+            appId = myArgs[1] || '';
+            force = myArgs[3] || '';        
+        }
     }
-    else
-    {
-        // name = 
-        name  = myArgs[2];
-        appId = myArgs[1] || '';
-        force = myArgs[3] || '';        
+    else {
+        name = myArgs[1];
+        appId = '';
+        force = '';
     }
 
     let path = appId;
-    if((type!="client") && (path.search('application')==-1))
+    if((type!="client") && (type!="init") && (path.search('application')==-1))
         path = '/applications/'+path;
 
     if(type == 'client')
