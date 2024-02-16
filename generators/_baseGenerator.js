@@ -72,6 +72,7 @@ class BaseGenerator
         let content4 = this.restoreComments(content3);
 
         content4 = content4.replace(/(configuration): null/g,"$1:\n");
+        // content4 = content4.replace(/\\?"$/gm, '').replace(/"$/gm,"");
 
         // write config back
         try {
@@ -141,6 +142,7 @@ class BaseGenerator
         let content4 = this.restoreComments(content3);
 
         content4 = content4.replace(/(services|tests|routes|tests): null/g,"$1:");
+        // content4 = content4.replace('\\"',"");
 
         // write config back
         try {
@@ -176,7 +178,25 @@ class BaseGenerator
      */
     restoreComments(yamlString) 
     {
-        const commentRegex = /COMMENT__(\d+):[\s]+["']?(.*)(["']?[ ]*)$/gm;
+        const commentRegex = /COMMENT__(\d+):[\s]+["'](.*)(["'][ ]*)$/gm;
+        let restoredYamlString = yamlString;
+        let match;
+        while ((match = commentRegex.exec(yamlString)) !== null) {
+            const line = match[0];
+            const comment = match[2];
+            const restoredComment = `# ${comment}`;
+            restoredYamlString = restoredYamlString.replace(line, restoredComment,"");
+        }
+
+        let res = this.restoreComments2(restoredYamlString);
+        return res;
+
+        return restoredYamlString;
+    }
+
+    restoreComments2(yamlString) 
+    {
+        const commentRegex = /COMMENT__(\d+):[\s]+["'](.*)(["'][ ]*)$/gm;
         let restoredYamlString = yamlString;
         let match;
         while ((match = commentRegex.exec(yamlString)) !== null) {
@@ -188,17 +208,18 @@ class BaseGenerator
         return restoredYamlString;
     }
 
+    // comments without "xx"
     restoreComments2(yamlString) {
-        const commentRegex = /COMMENT__(\d+):\s*["']?(.*?)["']?\s*$/gm;
+        const commentRegex = /COMMENT__(\d+):\s*(.*)$/gm;
         let restoredYamlString = yamlString;
         let match;
         while ((match = commentRegex.exec(yamlString)) !== null) {
             const index = match[1];
             const comment = match[2];
-            const placeholder = `COMMENT__${index}: ["']?${comment}["']?`;
-            const re2 = new RegExp(placeholder, 'g');
+            const placeholder = `COMMENT__${index}: ${comment}`;
+            const re2 = new RegExp(placeholder, '');
             const restoredComment = `# ${comment}`;
-            restoredYamlString = restoredYamlString.replace(re2, restoredComment);
+            restoredYamlString = restoredYamlString.replace(placeholder, restoredComment);
         }
         return restoredYamlString;
     }    
