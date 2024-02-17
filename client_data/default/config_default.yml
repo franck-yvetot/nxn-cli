@@ -1,0 +1,60 @@
+# add variables here to be used in config as "${VAR}"
+$variables:
+  PORT: ${{PORT||3000}}
+# ---------------------
+# 
+# services components
+# 
+# ---------------------
+services:
+  load: all
+  configuration:
+    test1:
+      upath: test1@app1
+# ---------------------
+# 
+# express routers
+# 
+# ---------------------
+routes:
+  # route default path
+  load: "*"
+  configuration:
+    test1_route:
+      upath: test1@app1
+      url: /app1/test1
+# ---------------------
+# 
+# to be loaded at startup
+# 
+# ---------------------
+run:
+  load: express
+# ---------------------
+# 
+# Tests
+# (launched if env TEST=true)
+# 
+# ---------------------
+tests:
+  load: express
+  configuration:
+    test1_test:
+      upath: test1@app1
+      injections:
+        test1: test1
+# express middleware section
+middleware:
+  defaultPath: "@nxn/boot/middleware/$id"
+  load: ENV,debug,express,CORS2,JSON
+  configuration:
+    express:
+      port: ${PORT}
+      message: Express server run on port
+    cors2:
+      verbs: GET,POST,PUT,DELETE
+    env: {}
+    debug:
+      path: "@nxn/debug"
+      DEBUG: "*"
+      DEBUG_COLORS: 1

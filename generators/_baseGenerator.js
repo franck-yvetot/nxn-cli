@@ -180,28 +180,33 @@ class BaseGenerator
     {
         // step 1: restore comments enclosed in " "        
         const commentRegex = /COMMENT__(\d+):[\s]+["'](.*)(["'][ ]*)$/gm;
-        let restoredYamlString = yamlString;
+        let yamlString2 = yamlString;
         let match;
         while ((match = commentRegex.exec(yamlString)) !== null) {
             const line = match[0];
             const comment = match[2];
             const restoredComment = `# ${comment}`;
-            restoredYamlString = restoredYamlString.replace(line, restoredComment,"");
+            yamlString2 = yamlString2.replace(line, restoredComment,"");
         }
+
+        // return this.restoreComments2(yamlString2);
 
         // step 2: restore other comments not enclosed in " "
-        const commentRegex2 = /COMMENT__(\d+):[\s]+["'](.*)(["'][ ]*)$/gm;
-        while ((match = commentRegex2.exec(yamlString)) !== null) {
-            const line = match[0];
+        const commentRegex2 = /COMMENT__(\d+):\s*(.*)$/gm;
+        let yamlString3 = yamlString2;
+        while ((match = commentRegex2.exec(yamlString2)) !== null) {
+            const index = match[1];
             const comment = match[2];
+            const placeholder = `COMMENT__${index}: ${comment}`;
+            const re2 = new RegExp(placeholder, '');
             const restoredComment = `# ${comment}`;
-            restoredYamlString = restoredYamlString.replace(line, restoredComment,"");
+            yamlString3 = yamlString3.replace(placeholder, restoredComment);
         }
-        return restoredYamlString;
-
+        return yamlString3;
     }
 
     // comments without "xx"
+    /*
     restoreComments2(yamlString) {
         const commentRegex = /COMMENT__(\d+):\s*(.*)$/gm;
         let restoredYamlString = yamlString;
@@ -215,7 +220,8 @@ class BaseGenerator
             restoredYamlString = restoredYamlString.replace(placeholder, restoredComment);
         }
         return restoredYamlString;
-    }    
+    } 
+    */   
 
     /**
      * get application path
