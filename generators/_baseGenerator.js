@@ -178,6 +178,7 @@ class BaseGenerator
      */
     restoreComments(yamlString) 
     {
+        // step 1: restore comments enclosed in " "        
         const commentRegex = /COMMENT__(\d+):[\s]+["'](.*)(["'][ ]*)$/gm;
         let restoredYamlString = yamlString;
         let match;
@@ -188,24 +189,16 @@ class BaseGenerator
             restoredYamlString = restoredYamlString.replace(line, restoredComment,"");
         }
 
-        let res = this.restoreComments2(restoredYamlString);
-        return res;
-
-        return restoredYamlString;
-    }
-
-    restoreComments2(yamlString) 
-    {
-        const commentRegex = /COMMENT__(\d+):[\s]+["'](.*)(["'][ ]*)$/gm;
-        let restoredYamlString = yamlString;
-        let match;
-        while ((match = commentRegex.exec(yamlString)) !== null) {
+        // step 2: restore other comments not enclosed in " "
+        const commentRegex2 = /COMMENT__(\d+):[\s]+["'](.*)(["'][ ]*)$/gm;
+        while ((match = commentRegex2.exec(yamlString)) !== null) {
             const line = match[0];
             const comment = match[2];
             const restoredComment = `# ${comment}`;
             restoredYamlString = restoredYamlString.replace(line, restoredComment,"");
         }
         return restoredYamlString;
+
     }
 
     // comments without "xx"
@@ -248,21 +241,48 @@ class BaseGenerator
      */
     getComponentPath(appId,type="component",compName=null) 
     {
-        let path = this.getAppPath(appId);
         if(!compName)
             compName = appId;
+
+        return this.getConfigFilePath(appId,type,compName,"yml","config");
+    }
+
+    /**
+     * get file path in config or other section 
+     *  path form: /application/<appId>/<section>/<name>.<type>.<ext>
+     * 
+     * @param {string} appId application id
+     * @param {string} type type of file that is added to name (ex. c1.<type>.yml)
+     * @param {string} name file base name 
+     * @param {*} ext 
+     * @param {*} section 
+     * @returns 
+     */
+    getConfigFilePath(appId,type="component",name=null,ext="yml",section="config") 
+    {
+        let path = this.getAppPath(appId);
+        if(!name)
+            name = appId;
 
         if(path.search('application')==-1)
             path = '/applications/'+path;
 
-        if(path.search('/config')==-1)
-            path = path+'/config';
+        if(path.search('/'+section)==-1)
+            path = path+'/'+section;
 
-        let fullPath = path+'/'+compName+'.'+type+'.yml';
+        let fullPath = path+'/'+name+'.'+type+'.'+ext;
         fullPath = fullPath.replace("//","/");
 
         return fullPath;
     }
+
+    async existsConfigPath(appId,type="component",name=null,ext="yml",section="config") {
+        let fullPath = this.getConfigFilePath(appId,type,name,ext,section)
+        
+        const exists = await fs.existsFileAsync(fullPath);
+        return exists;
+    }
+
 
     /**
      * create a component of type component or module
@@ -276,39 +296,77 @@ class BaseGenerator
      */
     async createComponent(compName,appId,type="component",forceCreate=false,template=null) 
     {
+        // function for replacing parts of the template
+        const replaceCB = (s,compName,fullPath,appId) => 
+        {
+            return s.replace(/MY_COMPONENT/g,compName);
+        }
+        
+        return this.createFileFromTemplate(
+            compName,
+            appId,
+            "component",
+            forceCreate,
+            template,
+            "config",
+            "yml",
+            replaceCB);
+    } 
+
+    /**
+     * create a component of type component or module
+     * 
+     * @param {*} compName 
+     * @param {*} appId 
+     * @param {*} type 
+     * @param {*} forceCreate 
+     * @param {*} template 
+     * @returns 
+     */
+    async createFileFromTemplate(
+        compName,
+        appId,
+        type="component",
+        forceCreate=false,
+        template=null,
+        section="config",
+        ext="yml",
+        replaceCB=(s,compName,basename) => {s.replace(/MY_COMPONENT/g,compName)}) 
+    {
         if(!template)
-            template = require("./templates/component.tpl");
+            template = require("./templates/"+type+".tpl");
 
         var s = template;
 
-        // replace path name
-        s = s.replace(/MY_COMPONENT/g,compName);
+        if(!compName)
+            compName = appId;
 
-        let fullPath = this.getComponentPath(appId,type,compName);
+        let fullPath =  this.getConfigFilePath(appId,type,compName,ext,section);
+
+        // replace path name
+        s = replaceCB(s,compName,fullPath,appId);
         
         if(await fs.existsFileAsync(fullPath) && !forceCreate) 
         {
-            console.error("this component already exists");
+            console.error("this "+type+" already exists");
             return false;
         }
 
         try 
         {
             await fs.writeFileAsync(fullPath,s,true);    
-            console.log("component created : "+fullPath);
+            console.log(type+" created : "+fullPath);
             return true;
         } 
         catch (error) {
             console.error(error);
             return false;
         }
-    } 
+    }     
     
-    async existsComponent(appId,type="component",compName=null) {
-        let fullPath = this.getComponentPath(appId,type,compName);
-        
-        const exists = await fs.existsFileAsync(fullPath);
-        return exists;
+    async existsComponent(appId,type="component",compName=null) 
+    {
+        return this.existsConfigPath(appId,"component",compName,"yml","config");
     }
 }
 
