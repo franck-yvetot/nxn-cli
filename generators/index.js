@@ -8,7 +8,13 @@ const templates = [
     'node',
     'route',
     'test',
-    'script'
+    'component',
+    'module',
+    'script',
+    'schema',
+    'lang',
+    'model',
+    'db'
 ]
 
 class Generators {

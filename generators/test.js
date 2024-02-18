@@ -83,10 +83,10 @@ class Generator extends BaseGenerator
 
     usage(pad=' ') {
         return {
-            usage:"<APPLICATION> <SCE>",
+            usage:"<NAME>@<APPLICATION>",
             description:
-pad+`adds a test class in an application, code is generated in /applications/APPLICATION/tests/SCE.test.js,
-${pad}where APP and SCE are the names of the application and service to test.
+pad+`adds a test class in an application, code is generated in /applications/APPLICATION/tests/NAME.test.js,
+${pad}where APPLICATION and NAME are the names of the application and service to test.
 ${pad}The application folder is created if it doesn't exist yet.
 ${pad}The service can be configured if added to the "service/configuration" section of the config file in the client data.
 `

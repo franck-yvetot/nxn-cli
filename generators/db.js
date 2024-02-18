@@ -12,7 +12,7 @@ class ComponentGenerator extends BaseGenerator
     usage(pad=' ') 
     {
         return {
-                usage:"db|mysql|firestore|mydb|etc. secretId",
+                usage:"<db|mysql|firestore|mydb|etc.> <secretId>",
                 description:
     pad+`adds a db connector in configuration.
     ${pad}if the db name includes mysql or sql, uses mysql connector, or if firexx, use firestore connector.
@@ -134,7 +134,7 @@ class ComponentGenerator extends BaseGenerator
         {
             if(!optional)
                 console.error("no db provided");
-            
+
             return false;
         }
 

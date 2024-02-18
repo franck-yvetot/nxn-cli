@@ -12,7 +12,7 @@ class ComponentGenerator extends BaseGenerator
     usage(pad=' ') 
     {
         return {
-                usage:"myschema@myapp",
+                usage:"<Schema name>@<APPLICATION>",
                 description:
     pad+`adds a locale for a schema, to be used by @nxn/db model.
     ${pad}The application folder is created if it doesn't exist yet.

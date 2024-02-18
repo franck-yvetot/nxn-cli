@@ -38,7 +38,7 @@ class Generator
 
     usage(pad=' ') {
         return {
-            usage:"APP COMMANDE",
+            usage:"<NAME>@<APPLICATION>",
             description:
 pad+`adds a script class in an application, code is generated in /applications/APP/scripts/COMMANDE.js,
 ${pad}where APP and COMMANDE are the names of the application and command.

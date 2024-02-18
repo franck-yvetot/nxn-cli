@@ -11,7 +11,7 @@ class ComponentGenerator extends BaseGenerator
     usage(pad=' ') 
     {
         return {
-                usage:"MODULE_NAME@APP",
+                usage:"<MODULE_NAME>@<APPLICATION>",
                 description:
     pad+`adds a module configuration in YML in an application.
     ${pad}The application folder is created if it doesn't exist yet.

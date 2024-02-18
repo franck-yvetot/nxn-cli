@@ -67,7 +67,7 @@ class Generator extends BaseGenerator
 {
     usage(pad=' ') {
         return {
-            usage:"APP NODE",
+            usage:"<NAME>@<APPLICATION>",
             description:
 pad+`adds a flow node class in an application, code is generated in /applications/APP/nodes/SCE.service.js,
 ${pad}where APP and SCE are the names of the application and service.
