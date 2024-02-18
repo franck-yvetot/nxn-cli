@@ -2,6 +2,8 @@ const { app } = require('@nxn/boot/boot.service');
 const fs = require('@nxn/files');
 const yaml = require('js-yaml');
 
+const yamlEditor = require("../services/yaml_editor");
+
 class BaseGenerator
 {
     constructor(t) {
@@ -39,17 +41,7 @@ class BaseGenerator
 
         this.configPath = params.toDir+'/client_data/default/config_default.yml';
 
-        const content = await fs.readFileAsync(this.configPath);
-        let content2;
-
-        // preserve comments as YAML entries
-        if(content) 
-        {
-            content2 = this.replaceComments(content.toString());
-        }
-        
-        // Parse YAML
-        const yamlObj = yaml.load(content2);
+        const yamlObj = await yamlEditor.load(this.configPath,true);
         
         // add object to section
         if(!yamlObj[section])
@@ -66,22 +58,13 @@ class BaseGenerator
             return false;            
         }
 
-        // Convert the YAML object back to YAML string
-        let content3 = yaml.dump(yamlObj,{quotingType:'"'});        
-
-        let content4 = this.restoreComments(content3);
-
-        content4 = content4.replace(/(configuration): null/g,"$1:\n");
-        // content4 = content4.replace(/\\?"$/gm, '').replace(/"$/gm,"");
-
-        // write config back
-        try {
-            fs.writeFileAsync(this.configPath,content4,true);    
-        } catch (error) {
-            console.error(error);
-        } 
-
-        return content4;
+        return await yamlEditor.save(
+            yamlObj,
+            this.configPath,
+            (content) => {
+                // cleanup empty configs
+                return content.replace(/(configuration): null/g,"$1:\n");
+            });
     }
 
     /**
@@ -103,17 +86,7 @@ class BaseGenerator
         if(!compName)
             compName = appId;
 
-        const content = await fs.readFileAsync(configPath);
-        let content2;
-
-        // preserve comments as YAML entries
-        if(content) 
-        {
-            content2 = this.replaceComments(content.toString());
-        }
-        
-        // Parse YAML
-        const yamlObj = yaml.load(content2);
+        const yamlObj = await yamlEditor.load(configPath,true);        
         
         // add object to section
         if(!yamlObj[section])
@@ -127,31 +100,13 @@ class BaseGenerator
             return false;            
         }
 
-        for(let sect2 in yamlObj)
-        {
-            continue;
-
-            if(sect2 == "services" || sect2 == "routes" ||sect2 == "tests")
-                if(yamlObj[sect2]===null)
-                    yamlObj[sect2] = {}
-        }
-
-        // Convert the YAML object back to YAML string
-        let content3 = yaml.dump(yamlObj,{quotingType:'"'});        
-
-        let content4 = this.restoreComments(content3);
-
-        content4 = content4.replace(/(services|tests|routes|tests): null/g,"$1:");
-        // content4 = content4.replace('\\"',"");
-
-        // write config back
-        try {
-            await fs.writeFileAsync(configPath,content4,true);    
-        } catch (error) {
-            console.error(error);
-        } 
-
-        return content4;
+        return await yamlEditor.save(
+            yamlObj,
+            configPath,
+            (content) => {
+                // cleanup empty configs
+                content4 = content4.replace(/(services|tests|routes|tests): null/g,"$1:");
+            });
     }
 
     /**
