@@ -1,12 +1,12 @@
 {
   "name": "@nxn/cli",
-  "version": "1.0.52",
+  "version": "1.0.53",
   "description": "generators for applications based on nxn components",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "build": "npm version patch && git push && npm publish"    
+    "build": "npm version patch && git push && npm publish"
   },
   "bin": {
     "nxg": "index.js"
