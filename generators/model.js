@@ -4,6 +4,9 @@ const BaseGenerator = require("./_baseGenerator")
 const strings = require('@nxn/ext/string.service');
 const yaml = require('js-yaml');
 
+const locale = require("./lang");
+const dbGen = require("./db");
+
 class ComponentGenerator extends BaseGenerator
 {
     init(config) {
@@ -55,12 +58,50 @@ class ComponentGenerator extends BaseGenerator
             console.error("cant load yml schema file, please create it first",error);
             return null
         }
-
     }
 
+    getExtraParams(params) 
+    {
+        if(params.args.length <= 2)
+            return;
+
+        for(let i= 2;i<params.args.length;i++) 
+        {
+            let arg = params.args[i];
+
+            if(arg == "force")
+                params.force = arg;
+
+            else if(locale.isLangId(arg))
+                params.lang = locale.isLangId(arg);
+
+            else 
+                params.db = arg;
+        }
+
+        return params;
+    }
+
+    /**
+     * generate model:
+     * - get schema from yml config
+     * - parse fields
+     * - generate model for managing data from schema
+     * - generate locale lang for fields
+     * - update config with locale and model
+     * - manage db injection by adding it automatically in config if not created yet
+     * 
+     * NB. if a db name is provided as last parameter of the command, use it, 
+     * or use default "db" param.
+     * 
+     * @param {*} params 
+     */
     async generate(params) 
     {
         let {name, appId,force,path} = params;
+        params = this.getExtraParams(params);
+
+        let db = params.db || "db";
 
         const template = require("./templates/model.tpl");        
 
@@ -77,6 +118,9 @@ class ComponentGenerator extends BaseGenerator
         let fields = schema.fields;
         let fieldDecl = [];
         let fgetters = [];
+
+        await locale.generate(params,fields,params.lang||"en");
+        await dbGen.generate(params);       
 
         let decl = `
     /**
@@ -115,7 +159,7 @@ class ComponentGenerator extends BaseGenerator
             let desc = {
                 fname,
                 ftype,
-                description: field.description || field.label || fname,
+                description: field.description || field.title || field.label || fname,
                 CamelName
             }
 
@@ -150,7 +194,7 @@ class ComponentGenerator extends BaseGenerator
                 ;
         }
         
-        return this.createFileFromTemplate(
+        this.createFileFromTemplate(
             name,
             appId,
             "model",
@@ -159,6 +203,29 @@ class ComponentGenerator extends BaseGenerator
             "models",
             "js",
             replaceCB);
+
+        // now update main configuration with new model
+        let model = 
+        {
+            path: "@nxn/db/db_model.service",
+            schema: "$ref(../models/"+name+".schema)",    
+            injections: 
+            {
+                db: db,
+                locale: name+"_locale"
+            }
+        }
+
+        await this.addToConfig(name+"_model", model,"services",params);                  
+
+            /*
+            test1_model:
+            path: "@nxn/db/db_model.service"
+            schema: $ref(../models/test1.schema)
+            injections:
+                db: db
+                locale: test1_locale  
+            */          
     }
 }
 

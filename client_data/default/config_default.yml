@@ -11,6 +11,20 @@ services:
   configuration:
     test1:
       upath: test1@app1
+    test1_locale:
+      upath: locale@nxn/db
+      default: en
+      langs:
+        en: $ref(../locales/en_test1.strings)
+    firestore:
+      upath: firestore@googleapi
+      conPath: .firestore
+    test1_model:
+      path: "@nxn/db/db_model.service"
+      schema: $ref(../models/test1.schema)
+      injections:
+        db: firestore
+        locale: test1_locale
 # ---------------------
 # 
 # express routers
