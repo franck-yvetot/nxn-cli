@@ -14,7 +14,8 @@ const templates = [
     'schema',
     'lang',
     'model',
-    'db'
+    'db',
+    'type'
 ]
 
 class Generators {

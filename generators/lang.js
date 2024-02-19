@@ -163,13 +163,12 @@ enums:
         // now update main configuration
         let locale = 
         {
-            upath: "locale@nxn/db",
+            path: "@nxn/db/locale.service",
             default: "en",    
             langs:{
-                en: "$ref(../locales/"+lang+"_"+name+".strings)"
+                en: "$ref(applications/"+appId+"/locales/"+lang+"_"+name+".strings)"
             }
         }   
-
         await this.addToConfig(name+"_locale", locale,"services",params);        
     }
 }
