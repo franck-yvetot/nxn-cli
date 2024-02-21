@@ -2,7 +2,12 @@ const fs = require('@nxn/files');
 const yamlEditor = require("../services/yaml_editor");
 const BaseGenerator = require("./_baseGenerator")
 
-const template = "graph TD;\n";
+const template = `graph TD;
+    classDef node fill:#eee,stroke:#eee,color:#333
+    classDef route fill:#2080D0,stroke:#eee,color:#fff
+    classDef nod fill:#C080C0,stroke:#eee,color:#fff
+    classDef service fill:#A9C9EB,stroke:#eee,color:#444
+`;
 
 class Generator extends BaseGenerator
 {
@@ -30,21 +35,21 @@ pad+`generates a diagram of components of the application in mermaid form.
         if(yamlObj.routes?.configuration)
         {
             for(let id in yamlObj.routes.configuration) {
-                s = this.addDependency(s,id,yamlObj.routes.configuration[id]);
+                s = this.addDependency(s,id,yamlObj.routes.configuration[id],'route');
             }
         }
 
         if(yamlObj.services?.configuration)
         {
             for(let id in yamlObj.services.configuration) {
-                s = this.addDependency(s,id,yamlObj.services.configuration[id]);
+                s = this.addDependency(s,id,yamlObj.services.configuration[id],'service');
             }
         }
 
         if(yamlObj.nodes?.configuration)
         {
             for(let id in yamlObj.nodes.configuration) {
-                s = this.addDependency(s,id,yamlObj.nodes.configuration[id]);
+                s = this.addDependency(s,id,yamlObj.nodes.configuration[id],'nod');
             }
         }
 
