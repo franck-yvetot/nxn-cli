@@ -3,14 +3,10 @@ const yamlEditor = require("../services/yaml_editor");
 const BaseGenerator = require("./_baseGenerator")
 
 const template = `graph TB;
-
-subgraph Legend
-    Route:::route
-    Service:::service
-    Node:::nod
-end
+subgraph main
 
 subgraph Application
+    direction LR;
     classDef node fill:#eee,stroke:#eee,color:#333
     classDef route fill:#2080D0,stroke:#eee,color:#fff
     classDef nod fill:#C080C0,stroke:#eee,color:#fff
@@ -18,8 +14,16 @@ subgraph Application
 `;
 const templateEnd = `end
 
+subgraph Legend
+    Route:::route
+    Service:::service
+    Node:::nod
+end
+end
+
 style Application fill:#fff,stroke:#999,color:#222
 style Legend fill:#eee,stroke:#eee,color:#333
+style main fill:#eee,stroke:#eee,color:#eee
 `;
 
 class Generator extends BaseGenerator
@@ -68,7 +72,7 @@ pad+`generates a diagram of components of the application in mermaid form.
 
         s+= templateEnd;
 
-        let fullPath = params.toDir+'/dependencies.mmd';
+        let fullPath = params.toDir+'/client_data/default/config_default.README.mmd';
         fullPath = fullPath.replace("//","/");
 
         try {

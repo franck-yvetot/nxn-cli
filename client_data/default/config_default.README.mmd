@@ -1,12 +1,8 @@
 graph TB;
-
-subgraph Legend
-    Route:::route
-    Service:::service
-    Node:::nod
-end
+subgraph main
 
 subgraph Application
+    direction LR;
     classDef node fill:#eee,stroke:#eee,color:#333
     classDef route fill:#2080D0,stroke:#eee,color:#fff
     classDef nod fill:#C080C0,stroke:#eee,color:#fff
@@ -29,5 +25,13 @@ subgraph Application
     test5:::service
 end
 
+subgraph Legend
+    Route:::route
+    Service:::service
+    Node:::nod
+end
+end
+
 style Application fill:#fff,stroke:#999,color:#222
 style Legend fill:#eee,stroke:#eee,color:#333
+style main fill:#eee,stroke:#eee,color:#eee
