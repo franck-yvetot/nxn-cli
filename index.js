@@ -10,7 +10,7 @@ const run = async () => {
     console.log(`npm version: ${npmVersion}`);
         
     var myArgs = process.argv.slice(2);
-    if(myArgs.length<2 && myArgs[0]!="init")
+    if(myArgs.length<2 && myArgs[0]!="init" && myArgs[0]!="mermaid")
     {
         console.error("This tool generates code. The general form is :\nnode generate.js <type> <other params>\n\n");
 
@@ -27,7 +27,7 @@ const run = async () => {
     let name = myArgs[1];
     let force;
     
-    if(type != 'init' && type != 'client' )
+    if(type != 'init' && type != 'client' && type != 'mermaid' )
     {
         aNames = name.split("@");
         if(aNames.length > 1)
