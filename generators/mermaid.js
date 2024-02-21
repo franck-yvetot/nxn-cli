@@ -67,7 +67,11 @@ pad+`generates a diagram of components of the application in mermaid form.
         {
             for(let inj in desc.injections)
             {
-                s += "    "+id+" --> "+inj+";\n"
+                let dep = desc.injections[inj];
+                if(dep != inj)
+                    s += "    "+id+" -- "+inj+" -->"+dep+";\n"
+                else
+                    s += "    "+id+" --> "+inj+";\n"
             }
         }
         return s;
