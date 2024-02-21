@@ -1,7 +1,5 @@
 const { app } = require('@nxn/boot/boot.service');
 const fs = require('@nxn/files');
-const yaml = require('js-yaml');
-
 const yamlEditor = require("../services/yaml_editor");
 
 class BaseGenerator

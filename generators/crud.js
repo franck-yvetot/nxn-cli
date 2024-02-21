@@ -101,7 +101,7 @@ ${pad}The service can be configured if added to the "service/configuration" sect
                 {
                     return s
                         .replace(/GFileSce/g,Basename+"Sce")
-                        .replace(/MODEL_FILE/g,Basename)
+                        .replace(/MODEL_FILE/g,basename)
                         .replace(/MODEL_NAME/g,BasenameSingular)
                     ;
                 });        

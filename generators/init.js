@@ -18,7 +18,6 @@ pad+`Create empty project.`
         };
     }
 
-
     async generate(params) 
     {
         const {name,force,args,path} = params;

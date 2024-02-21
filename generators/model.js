@@ -210,9 +210,9 @@ class ComponentGenerator extends BaseGenerator
 
         // now update main configuration with new model
         let model = 
-        {
+        {            
             path: "@nxn/db/db_model.service",
-            schema: "$ref(../models/"+name+".schema)",    
+            schema: "$ref(applications/"+appId+"/models/"+name+".schema)",    
             injections: 
             {
                 db: db,
