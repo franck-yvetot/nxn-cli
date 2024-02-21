@@ -1,4 +1,12 @@
-graph TD;
+graph TB;
+
+subgraph Legend
+    Route:::route
+    Service:::service
+    Node:::nod
+end
+
+subgraph Application
     classDef node fill:#eee,stroke:#eee,color:#333
     classDef route fill:#2080D0,stroke:#eee,color:#fff
     classDef nod fill:#C080C0,stroke:#eee,color:#fff
@@ -19,3 +27,7 @@ graph TD;
     test5_model --> db;
     test5_model -- locale -->test5_locale;
     test5:::service
+end
+
+style Application fill:#fff,stroke:#999,color:#222
+style Legend fill:#eee,stroke:#eee,color:#333
