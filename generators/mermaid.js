@@ -66,8 +66,13 @@ pad+`generates a diagram of components of the application in mermaid form.
         return true;
     }
 
-    addDependency(s,id,desc) 
+    addDependency(s,id,desc,cls=null) 
     {
+        let name = id;
+        if(cls)
+            name +=":::"+cls;
+        s+="    "+name+"\n";
+
         if(desc.injections)
         {
             for(let inj in desc.injections)
