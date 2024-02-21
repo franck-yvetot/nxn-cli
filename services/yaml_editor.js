@@ -30,6 +30,7 @@ class YamlEditor
             if(content) 
             {
                 content2 = this.replaceComments(content.toString());
+                content2 = this.replaceEmptyLines(content2);
             }    
         }
         else
@@ -90,6 +91,7 @@ class YamlEditor
         let content = yaml.dump(yamlObj,{quotingType:'"'});        
 
         let content2 = this.restoreComments(content);
+        content2 = this.restoreEmptyLines(content2);
 
         if(onSave)
             content2 = onSave(content2);
@@ -120,6 +122,22 @@ class YamlEditor
             return comment;
         });
     }
+
+    /**
+     * replace empty lines by LINE__<index line>
+     * @param {*} yamlString 
+     * @returns 
+     */
+    replaceEmptyLines(yamlString)
+    {
+        return yamlString;
+
+        let index = 1;
+        return yamlString.replace(/^[\s\t]*$/gm, (match) => {
+            const line = `LINE__${index++}: empty`;
+            return line;
+        });
+    }    
 
     /**
      * Function to restore comments from "_comment_(index)" lines in a YAML string
@@ -154,6 +172,29 @@ class YamlEditor
             yamlString3 = yamlString3.replace(placeholder, restoredComment);
         }
         return yamlString3;
+    }    
+
+    /**
+     * Function to restore comments from "_comment_(index)" lines in a YAML string
+     * 
+     * @param {*} yamlString 
+     * @returns 
+     */
+    restoreEmptyLines(yamlString) 
+    {
+        return yamlString;
+
+        let match;
+        // step 2: restore lines
+        const commentRegex2 = /LINE__(\d+):(\s*empty\s*)$/gm;
+        let yamlString2 = yamlString;
+        while ((match = commentRegex2.exec(yamlString)) !== null) {
+            const index = match[1];
+            const comment = match[2];
+            const placeholder = `LINE__${index}:${comment}`;
+            yamlString2 = yamlString3.replace(placeholder, "\n");
+        }
+        return yamlString2;
     }    
 
 }

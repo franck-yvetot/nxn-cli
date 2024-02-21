@@ -70,21 +70,22 @@ class ComponentGenerator extends BaseGenerator
 
     getExtraParams(params) 
     {
-        if(params.args.length <= 2)
-            return;
-
-        for(let i= 2;i<params.args.length;i++) 
+        if(params.args.length > 2)
         {
-            let arg = params.args[i];
 
-            if(arg == "force")
-                params.force = arg;
-
-            else if(this.isLangId(arg))
-                params.lang = this.isLangId(arg);
-
-            else 
-                params.db = arg;
+            for(let i= 2;i<params.args.length;i++) 
+            {
+                let arg = params.args[i];
+    
+                if(arg == "force")
+                    params.force = arg;
+    
+                else if(this.isLangId(arg))
+                    params.lang = this.isLangId(arg);
+    
+                else 
+                    params.db = arg;
+            }    
         }
 
         return params;

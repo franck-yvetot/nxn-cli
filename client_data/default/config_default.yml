@@ -25,6 +25,21 @@ services:
       injections:
         db: firestore
         locale: test1_locale
+    test4:
+      upath: test4@app1
+    test5_locale:
+      path: "@nxn/db/locale.service"
+      default: en
+      langs:
+        en: $ref(applications/app1/locales/en_test5.strings)
+    test5_model:
+      path: "@nxn/db/db_model.service"
+      schema: $ref(../models/test5.schema)
+      injections:
+        db: db
+        locale: test5_locale
+    test5:
+      upath: test5@app1
 # ---------------------
 # 
 # express routers
@@ -37,6 +52,9 @@ routes:
     test1_route:
       upath: test1@app1
       url: /app1/test1
+    test5_route:
+      upath: test5@app1
+      url: /app1/test5
 # ---------------------
 # 
 # to be loaded at startup

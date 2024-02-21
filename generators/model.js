@@ -63,21 +63,21 @@ class ComponentGenerator extends BaseGenerator
 
     getExtraParams(params) 
     {
-        if(params.args.length <= 2)
-            return;
-
-        for(let i= 2;i<params.args.length;i++) 
+        if(params.args.length > 2)
         {
-            let arg = params.args[i];
+            for(let i= 2;i<params.args.length;i++) 
+            {
+                let arg = params.args[i];
 
-            if(arg == "force")
-                params.force = arg;
+                if(arg == "force")
+                    params.force = arg;
 
-            else if(locale.isLangId(arg))
-                params.lang = locale.isLangId(arg);
+                else if(locale.isLangId(arg))
+                    params.lang = locale.isLangId(arg);
 
-            else 
-                params.db = arg;
+                else 
+                    params.db = arg;
+            }
         }
 
         return params;
@@ -133,9 +133,11 @@ class ComponentGenerator extends BaseGenerator
     /**
      * Set FNAME
      * @param {FTYPE} FNAME - FDESCRIPTION
+     * @returns {CLASS_NAME}
      */
     setUP_CAMEL_NAME(FNAME) {
         this.FNAME = FNAME;
+        return this;
     }
 
     /**
@@ -172,6 +174,7 @@ class ComponentGenerator extends BaseGenerator
             fieldDecl.push(decl2);
 
             let getter2 = getter
+                .replace(/CLASS_NAME/g,clsName)
                 .replace(/UP_CAMEL_NAME/g,desc.CamelName)
                 .replace(/FNAME/g,desc.fname)
                 .replace(/FTYPE/g,desc.ftype)

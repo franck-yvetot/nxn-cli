@@ -42,7 +42,7 @@ class MY_SCE_TestSce extends FlowNode
             // init tests data
             let sce = this.MY_SCE_BASE;
 
-            let token = this.config.token || ""; // use token from config if provided
+            let token = this.config.token || process.env.TEST_TOKEN; // use token from config or env if provided
 
             /** @type {import('../types/types').gUser} */
             let user = {email:"me@mondomaine.com", gToken:null};
