@@ -46,14 +46,14 @@ module.exports.MY_SCESce = MY_SCESce;
 class Generator extends BaseGenerator
 {
     constructor() {
-        super("service");
+        super("crud");
     }
 
     usage(pad=' ') {
         return {
             usage:"<NAME>@<APPLICATION>",
             description:
-pad+`adds a service class in an application, code is generated in /applications/APP/SCE.service.js,
+pad+`adds a CRUD service class for model in an application, code is generated in /applications/APP/SCE.service.js,
 ${pad}where APP and SCE are the names of the application and service.
 ${pad}The application folder is created if it doesn't exist yet.
 ${pad}The service can be configured if added to the "service/configuration" section of the config file in the client data.
@@ -115,7 +115,7 @@ ${pad}The service can be configured if added to the "service/configuration" sect
 
         await this.addToConfig(basename, sce,"services",params);
 
-        console.log("Generated service "+fullPath);
+        console.log("Generated crud service "+fullPath);
         return true;
     }  
 }

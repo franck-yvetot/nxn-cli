@@ -14,6 +14,7 @@ const templates = [
     'schema',
     'lang',
     'model',
+    'crud',
     'db',
     'type'
 ]
