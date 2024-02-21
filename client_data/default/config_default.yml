@@ -23,8 +23,12 @@ services:
       path: "@nxn/db/db_model.service"
       schema: $ref(../models/test1.schema)
       injections:
-        db: firestore
+        db: firestore,mysql
         locale: test1_locale
+
+    mysql:
+      path: "@nxn/db/mysql.service"
+
     test4:
       upath: test4@app1
     test5_locale:

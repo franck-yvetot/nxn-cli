@@ -3,7 +3,19 @@ graph TD;
     classDef route fill:#2080D0,stroke:#eee,color:#fff
     classDef nod fill:#C080C0,stroke:#eee,color:#fff
     classDef service fill:#A9C9EB,stroke:#eee,color:#444
+    test1_route:::route
+    test5_route:::route
+    test1:::service
+    test1_locale:::service
+    firestore:::service
+    test1_model:::service
     test1_model -- db -->firestore;
+    test1_model -- db -->mysql;
     test1_model -- locale -->test1_locale;
+    mysql:::service
+    test4:::service
+    test5_locale:::service
+    test5_model:::service
     test5_model --> db;
     test5_model -- locale -->test5_locale;
+    test5:::service
