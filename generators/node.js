@@ -60,6 +60,9 @@ class MY_SCENodeFactory
 }
 
 module.exports = new MY_SCENodeFactory();
+// add exported types here for jsdoc/typescript pupose
+module.exports.MY_SCENode = MY_SCENode;
+
 `;
 
 

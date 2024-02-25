@@ -45,7 +45,7 @@ class MY_SCE_TestSce extends FlowNode
             let token = this.config.token || process.env.TEST_TOKEN; // use token from config or env if provided
 
             /** @type {import('../types/types').gUser} */
-            let user = {email:"me@mondomaine.com", gToken:null};
+            let user = {email:"me@mondomaine.com", gtoken:token};
 
             // search for groups starting with dev
             debug.log("test 0 : executing...");
