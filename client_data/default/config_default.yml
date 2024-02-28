@@ -1,6 +1,11 @@
 # add variables here to be used in config as "${VAR}"
 $variables:
   PORT: ${{PORT||3000}}
+modules:
+  load: "*"
+  configuration:
+    app1_mod:
+      upath: app1@app1
 # ---------------------
 # 
 # services components
@@ -25,10 +30,8 @@ services:
       injections:
         db: firestore,mysql
         locale: test1_locale
-
     mysql:
       path: "@nxn/db/mysql.service"
-
     test4:
       upath: test4@app1
     test5_locale:

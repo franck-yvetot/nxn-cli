@@ -17,24 +17,27 @@ class BaseGenerator
         let appId = params.appId;
         let id = name;
 
-        if(await this.existsComponent(appId,"module",appId))
+        if( section != "modules")
         {
-            return await this.addToComponent(name, obj,section,params,"module",appId);
-        }
-
-        if(await this.existsComponent(appId,"component",appId))
-        {
-            return await this.addToComponent(name, obj,section,params,"component",appId);
-        }
-
-        if(await this.existsComponent(appId,"component",name))
-        {
-            return await this.addToComponent(name, obj,section,params,"component",name);
-        }
-
-        if(false &&  await this.createComponent(appId,appId,"module"))
-        {
-            return await this.addToComponent(name, obj,section,params,"module",appId);
+            if(await this.existsComponent(appId,"module",appId))
+            {
+                return await this.addToComponent(name, obj,section,params,"module",appId);
+            }
+    
+            if(await this.existsComponent(appId,"component",appId))
+            {
+                return await this.addToComponent(name, obj,section,params,"component",appId);
+            }
+    
+            if(await this.existsComponent(appId,"component",name))
+            {
+                return await this.addToComponent(name, obj,section,params,"component",name);
+            }
+    
+            if(false &&  await this.createComponent(appId,appId,"module"))
+            {
+                return await this.addToComponent(name, obj,section,params,"module",appId);
+            }
         }
 
         this.configPath = params.toDir+'/client_data/default/config_default.yml';
@@ -103,7 +106,7 @@ class BaseGenerator
             configPath,
             (content) => {
                 // cleanup empty configs
-                content4 = content4.replace(/(services|tests|routes|tests): null/g,"$1:");
+                return content.replace(/(services|tests|routes|tests): null/g,"$1:");
             });
     }
 

@@ -35,6 +35,13 @@ class ComponentGenerator extends BaseGenerator
 
         await this.createComponent(basename,appId,"module",forceCreate);
 
+        // now update main configuration
+        let def = 
+        {
+            upath: basename+"@"+appId,
+        }   
+        await this.addToConfig(basename+"_mod", def,"modules",params); 
+
         return true;
     }
 }
