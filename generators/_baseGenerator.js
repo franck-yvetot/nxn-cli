@@ -264,7 +264,7 @@ class BaseGenerator
         return this.createFileFromTemplate(
             compName,
             appId,
-            "component",
+            type,
             forceCreate,
             template,
             "config",

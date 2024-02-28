@@ -27,7 +27,7 @@ class ComponentGenerator extends BaseGenerator
     {
         let {name, appId,force,path} = params;
 
-        let aName = name.split('/');
+        let aName = (name || appId).split('/');
         let basename = aName.pop();
         // let appId = params.args[1];
 
