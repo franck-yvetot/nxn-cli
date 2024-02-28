@@ -19,7 +19,7 @@ class MY_SCE_TestSce extends FlowNode
     {
         super.init(config,ctxt,injections);
 
-        /** @type {import('../services/MY_SCE_BASE.service').MY_SCESce} */
+        /** @type {import('../MY_TYPEs/MY_SCE_BASE.MY_TYPE').MY_SCESce} */
         this.MY_SCE_BASE = 
             this.getInjection('MY_SCE_BASE'); // get injection
         
@@ -35,10 +35,7 @@ class MY_SCE_TestSce extends FlowNode
     async run() 
     {
         try 
-        {
-            // await for services init to finish
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
+        {           
             // init tests data
             let sce = this.MY_SCE_BASE;
 
@@ -101,43 +98,89 @@ ${pad}The service can be configured if added to the "service/configuration" sect
         let basename = aName.pop();
 
         let path2 = aName.join('/');
-        path = path+'/'+path2;
+        let basepath = path+'/'+path2;
         
         basename = _path_.basename(basename);
         let matches = basename.match('/([^.]+)[.]test/');
         if(matches)
             basename=matches[1];
         
-        if(path.search('/tests')==-1 && path.search('node_modules')==-1)
-            path = path+'/tests';
+        if(basepath.search('/tests')==-1 && basepath.search('node_modules')==-1)
+            path = basepath+'/tests';
 
-        let fullPath = path+'/'+basename+'.test.js';
-        fullPath = fullPath.replace("//","/");
+        let fullPath;
+
+        let fullPathSce = basepath+'/services/'+basename+'.service.js';
+        let fullPathNode = basepath+'/nodes/'+basename+'.node.js';
 
         let s = template;
         let Basename = strings.toCamelCase(basename,true);
+        let baseNameTest;
 
-        // replace path name
-        s = s.replace(/MY_SCE_BASE/g,basename);
+        if(await fs.existsFileAsync(fullPathNode)) 
+        {
+            fullPath = path+'/'+basename+'_node.test.js';
+            fullPath = fullPath.replace("//","/");
+            baseNameTest = basename+'_node';
 
-        // replace class name
-        s = s.replace(/MY_SCE/g,Basename);
+            //  NOE Exists
+            s = s.replace(/MY_SCESce/g,Basename+"Node");           
+
+            // replace path name
+            s = s.replace(/MY_SCE_BASE/g,basename);
+
+            s = s.replace(/MY_TYPE/g,"node");
+            
+            // replace path name
+            s = s.replace(/MY_SCE_BASE/g,basename);
+
+            // replace class name
+            s = s.replace(/MY_SCE/g,Basename);
+
+            // replace class name suffix
+            s = s.replace(/_TestSce/g,"_TestNode");
+
+        }
+        else
+        {
+            // default : test for a service
+            fullPath = path+'/'+basename+'.test.js';
+            fullPath = fullPath.replace("//","/");
+            baseNameTest = basename;
+
+            s = s.replace(/MY_SCESce/g,Basename+"Sce");
+
+            // replace path name
+            s = s.replace(/MY_SCE_BASE/g,basename);
+
+            s = s.replace(/MY_TYPE/g,"service");
+            
+            // replace path name
+            s = s.replace(/MY_SCE_BASE/g,basename);
+
+            // replace class name
+            s = s.replace(/MY_SCE/g,Basename);
+        }
 
         if(await fs.existsFileAsync(fullPath) && (force!='force')) 
         {
             console.error("this test service already exists");
         }
-        else {
-            try {
+        else 
+        {
+            try 
+            {
                 fs.writeFileAsync(fullPath,s,true);    
-            } catch (error) {
+            } 
+            catch (error) 
+            {
                 console.error(error);
             }    
         }
 
         // now update main configuration
         let app = params.appId;
-        let upath = basename+"@"+app;
+        let upath = baseNameTest+"@"+app;
         let sce = {
             upath,
             injections:
@@ -147,7 +190,7 @@ ${pad}The service can be configured if added to the "service/configuration" sect
 
         sce.injections[basename] = basename;
 
-        await this.addToConfig(basename+"_test", sce,"tests",params);
+        await this.addToConfig(baseNameTest+"_test", sce,"tests",params);
 
         console.log("Generated test service "+fullPath);
         return true;

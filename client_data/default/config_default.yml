@@ -78,10 +78,7 @@ run:
 tests:
   load: express
   configuration:
-    test2_test:
-      upath: test2@app1
-      injections:
-        test2: test2
+
 # express middleware section
 middleware:
   defaultPath: "@nxn/boot/middleware/$id"
