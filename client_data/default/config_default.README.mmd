@@ -3,79 +3,132 @@ subgraph main
 
 subgraph Application
     direction LR;
-    classDef node fill:#eee,stroke:#eee,color:#333
-    classDef route fill:#2080D0,stroke:#eee,color:#fff
-    classDef nod fill:#C080C0,stroke:#eee,color:#fff
-    classDef service fill:#A9C9EB,stroke:#eee,color:#444
-    test1_route("test1_route"):::route
-    test5_route("test5_route"):::route
-    test1["test1"]:::service
-    test1_locale["test1_locale"]:::service
-    firestore["firestore"]:::service
-    test1_model["test1_model"]:::service
+    classDef nodeCls fill:#eee,stroke:#eee,color:#333
+    classDef routeCls fill:#2080D0,stroke:#eee,color:#fff
+    classDef nodCls fill:#C080C0,stroke:#eee,color:#fff
+    classDef serviceCls fill:#A9C9EB,stroke:#eee,color:#444
+    test1_route("test1_route"):::routeCls
+    test5_route("test5_route"):::routeCls
+    test1["test1"]:::serviceCls
+    test1_locale["test1_locale"]:::serviceCls
+    firestore["firestore"]:::serviceCls
+    test1_model["test1_model"]:::serviceCls
     test1_model -- db -->firestore;
     test1_model -- db -->mysql;
     test1_model -- locale -->test1_locale;
-    mysql["mysql"]:::service
-    test4["test4"]:::service
-    test5_locale["test5_locale"]:::service
-    test5_model["test5_model"]:::service
+    mysql["mysql"]:::serviceCls
+    test4["test4"]:::serviceCls
+    test5_locale["test5_locale"]:::serviceCls
+    test5_model["test5_model"]:::serviceCls
     test5_model --> db;
     test5_model -- locale -->test5_locale;
-    test5["test5"]:::service
+    test5["test5"]:::serviceCls
 end
 
 subgraph Legend
-    Route:::route
-    Service:::service
-    Node:::nod
+    Route:::routeCls
+    Service:::serviceCls
+    Node:::nodCls
 end
 
-subgraph Documentation
+subgraph Modules
     direction LR;
-    classDef node fill:#eee,stroke:#eee,color:#333
-    classDef route fill:#2080D0,stroke:#eee,color:#fff
-    classDef nod fill:#C080C0,stroke:#eee,color:#fff
-    classDef service fill:#A9C9EB,stroke:#eee,color:#444
+    classDef nodeCls fill:#C080C0,stroke:#eee,color:#fff
+    classDef routeCls fill:#2080D0,stroke:#eee,color:#fff
+    classDef nodCls fill:#C080C0,stroke:#eee,color:#fff
+    classDef serviceCls fill:#A9C9EB,stroke:#eee,color:#444
 
 
-subgraph Documentation_0
+subgraph app1
 direction TB;
-    test1_route_doc("<b>test1_route_doc</b><br><br><i>test1@app1</i><br><br>"):::route
 
-    test5_route_doc("<b>test5_route_doc</b><br><br><i>test5@app1</i><br><br>"):::route
+subgraph app1:routes
+direction LR;
 
-    test1_doc["<b>test1_doc</b><br><br>test1@app1<br><br>"]:::service
-
-    test1_locale_doc["<b>test1_locale_doc</b><br><br>locale@nxn/db<br><br>"]:::service
-
-    firestore_doc["<b>firestore_doc</b><br><br>firestore@googleapi<br><br>"]:::service
-
-end
-style Documentation_0 fill:#fff,stroke:#fff,color:#fff
-
-subgraph Documentation_1
+subgraph app1_routes1
 direction TB;
-    test1_model_doc["<b>test1_model_doc</b><br><br>@nxn/db/db_model.service<br><br>"]:::service
+    test1_route_doc("<b>test1_route_doc</b><br><br><i>test1@app1</i><br><br>"):::routeCls
 
-    mysql_doc["<b>mysql_doc</b><br><br>@nxn/db/mysql.service<br><br>"]:::service
-
-    test4_doc["<b>test4_doc</b><br><br>test4@app1<br><br>"]:::service
-
-    test5_locale_doc["<b>test5_locale_doc</b><br><br>@nxn/db/locale.service<br><br>"]:::service
-
-    test5_model_doc["<b>test5_model_doc</b><br><br>@nxn/db/db_model.service<br><br>"]:::service
+    test5_route_doc("<b>test5_route_doc</b><br><br><i>test5@app1</i><br><br>"):::routeCls
 
 end
-style Documentation_1 fill:#fff,stroke:#fff,color:#fff
+style app1_routes1 fill:#fff,stroke:#fff,color:#fff
 
-subgraph Documentation_2
+end
+style app1:routes fill:#f0f0f0,stroke:#eee,color:#444
+
+
+subgraph app1:services
+direction LR;
+
+subgraph app1_services1
 direction TB;
-    test5_doc["<b>test5_doc</b><br><br>test5@app1<br><br>"]:::service
+    test1_doc["<b>test1_doc</b><br><br>test1@app1<br><br>"]:::serviceCls
+
+    test4_doc["<b>test4_doc</b><br><br>test4@app1<br><br>"]:::serviceCls
+
+    test5_doc["<b>test5_doc</b><br><br>test5@app1<br><br>"]:::serviceCls
 
 end
-style Documentation_2 fill:#fff,stroke:#fff,color:#fff
+style app1_services1 fill:#fff,stroke:#fff,color:#fff
+
 end
+style app1:services fill:#f0f0f0,stroke:#eee,color:#444
+
+end
+style app1 fill:#f0f0f0,stroke:#eee,color:#444
+
+
+
+subgraph nxn/db
+direction TB;
+
+subgraph nxn/db:services
+direction LR;
+
+subgraph nxn/db_services1
+direction TB;
+    test1_locale_doc["<b>test1_locale_doc</b><br><br>locale@nxn/db<br><br>"]:::serviceCls
+
+    test1_model_doc["<b>test1_model_doc</b><br><br>@nxn/db/db_model.service<br><br>"]:::serviceCls
+
+    mysql_doc["<b>mysql_doc</b><br><br>@nxn/db/mysql.service<br><br>"]:::serviceCls
+
+    test5_locale_doc["<b>test5_locale_doc</b><br><br>@nxn/db/locale.service<br><br>"]:::serviceCls
+
+    test5_model_doc["<b>test5_model_doc</b><br><br>@nxn/db/db_model.service<br><br>"]:::serviceCls
+
+end
+style nxn/db_services1 fill:#fff,stroke:#fff,color:#fff
+
+end
+style nxn/db:services fill:#f0f0f0,stroke:#eee,color:#444
+
+end
+style nxn/db fill:#f0f0f0,stroke:#eee,color:#444
+
+
+
+subgraph googleapi
+direction TB;
+
+subgraph googleapi:services
+direction LR;
+
+subgraph googleapi_services1
+direction TB;
+    firestore_doc["<b>firestore_doc</b><br><br>firestore@googleapi<br><br>"]:::serviceCls
+
+end
+style googleapi_services1 fill:#fff,stroke:#fff,color:#fff
+
+end
+style googleapi:services fill:#f0f0f0,stroke:#eee,color:#444
+
+end
+style googleapi fill:#f0f0f0,stroke:#eee,color:#444
+end
+style Modules fill:#fff,stroke:#999,color:#222
 
 
 
@@ -83,6 +136,5 @@ end
 
 
 style Application fill:#fff,stroke:#999,color:#222
-style Documentation fill:#fff,stroke:#999,color:#222
 style Legend fill:#eee,stroke:#eee,color:#333
 style main fill:#eee,stroke:#eee,color:#eee

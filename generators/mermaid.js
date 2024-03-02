@@ -7,17 +7,17 @@ subgraph main
 
 subgraph Application
     direction LR;
-    classDef node fill:#eee,stroke:#eee,color:#333
-    classDef route fill:#2080D0,stroke:#eee,color:#fff
-    classDef nod fill:#C080C0,stroke:#eee,color:#fff
-    classDef service fill:#A9C9EB,stroke:#eee,color:#444
+    classDef nodeCls fill:#eee,stroke:#eee,color:#333
+    classDef routeCls fill:#2080D0,stroke:#eee,color:#fff
+    classDef nodCls fill:#C080C0,stroke:#eee,color:#fff
+    classDef serviceCls fill:#A9C9EB,stroke:#eee,color:#444
 `;
 const templateEnd = `end
 
 subgraph Legend
-    Route:::route
-    Service:::service
-    Node:::nod
+    Route:::routeCls
+    Service:::serviceCls
+    Node:::nodCls
 end
 
 DOCUMENTATION_GRAPH
@@ -26,20 +26,20 @@ end
 
 
 style Application fill:#fff,stroke:#999,color:#222
-style Documentation fill:#fff,stroke:#999,color:#222
 style Legend fill:#eee,stroke:#eee,color:#333
 style main fill:#eee,stroke:#eee,color:#eee
 `;
 
-const templateDoc = `subgraph Documentation
+const templateDoc = `subgraph Modules
     direction LR;
-    classDef node fill:#eee,stroke:#eee,color:#333
-    classDef route fill:#2080D0,stroke:#eee,color:#fff
-    classDef nod fill:#C080C0,stroke:#eee,color:#fff
-    classDef service fill:#A9C9EB,stroke:#eee,color:#444
+    classDef nodeCls fill:#C080C0,stroke:#eee,color:#fff
+    classDef routeCls fill:#2080D0,stroke:#eee,color:#fff
+    classDef nodCls fill:#C080C0,stroke:#eee,color:#fff
+    classDef serviceCls fill:#A9C9EB,stroke:#eee,color:#444
 
 `;
 const templateDocEnd = `end
+style Modules fill:#fff,stroke:#999,color:#222
 
 `;
 
@@ -67,49 +67,50 @@ pad+`generates a diagram of components of the application in mermaid form.
         this.configPath = params.toDir+'/client_data/default/config_default.yml';
         const yamlObj = await yamlEditor.load(this.configPath,false);
 
+        // global doc of all items
         let docs = [];
+
+        // doc by package
+        let docPackages = {}
 
         if(yamlObj.routes?.configuration)
         {
-            for(let id in yamlObj.routes.configuration) {
-                s = this.addDependency(s,id,yamlObj.routes.configuration[id],'route');
-                docs.push(
-                    this.addDoc("",id,yamlObj.routes.configuration[id],'route')
-                );
+            for(let id in yamlObj.routes.configuration) 
+            {
+                // add to global flow
+                s += this.processItem(id,yamlObj.routes.configuration[id],
+                    'route','routes',
+                    docs,docPackages);
             }
         }
 
         if(yamlObj.services?.configuration)
         {
-            for(let id in yamlObj.services.configuration) {
-                s = this.addDependency(s,id,yamlObj.services.configuration[id],'service');
-                docs.push(
-                    this.addDoc("",id,yamlObj.services.configuration[id],'service')
-                );
+            for(let id in yamlObj.services.configuration) 
+            {
+                s += this.processItem(id,yamlObj.services.configuration[id],
+                    'service','services',
+                    docs,docPackages);
             }
         }
 
         if(yamlObj.nodes?.configuration)
         {
-            for(let id in yamlObj.nodes.configuration) {
-                s = this.addDependency(s,id,yamlObj.nodes.configuration[id],'nod');
-                docs.push(
-                    this.addDoc("",id,yamlObj.nodes.configuration[id],'nod')
-                );
+            for(let id in yamlObj.nodes.configuration) 
+            {
+                s += this.processItem(id,yamlObj.nodes.configuration[id],
+                    'node','nodes',
+                    docs,docPackages);
             }
         }
 
         s+= templateEnd;        
     
-        let sdoc = templateDoc;
-        let chunks = array_chunk(docs, 5);
-        let ci = 0;
-        sdoc += chunks.map(
-            chunk => this.createGraphLine(chunk,ci++)
-        ).join(''); // Join the array elements into a single string
-        sdoc += templateDocEnd;
+        // let sdoc = this.getGlobalDoc(docs);
+        
+        let sdoc2 = this.getPackagesGraph(docPackages);
 
-        s = s.replace("DOCUMENTATION_GRAPH",sdoc);
+        s = s.replace("DOCUMENTATION_GRAPH",sdoc2);
 
         let fullPath = params.toDir+'/client_data/default/config_default.README.mmd';
         fullPath = fullPath.replace("//","/");
@@ -124,19 +125,95 @@ pad+`generates a diagram of components of the application in mermaid form.
         return true;
     }
 
+    processItem(id,desc,type,section,docs,docPackages)
+    {
+        // add to global flow
+        let s = this.getMermaidItem(id,desc,type);
+
+        // get node documentation (mermaid node)
+        let doc = this.getDocItemNode(id,desc,type);
+
+        // add to global list
+        docs.push(doc);
+
+        // add to package
+        this.addToPackage(doc,desc,docPackages,section)        
+
+        return s;
+    }
+
     /**
-     * returns item mmd desc in flow and also in doc
+     * add node doc to package
+     * 
+     * @param {string} doc in mmd form
+     * @param {*} desc node desc
+     * @param {{services:[],routes:[],nodes:[]}} docPackages 
+     * @param {"routes"|"services"|"nodes"} section 
+     */
+    addToPackage(doc,desc,docPackages,section) 
+    {
+        let pack = this.getNodePackageId(desc);
+        if(!docPackages[pack]) {
+            docPackages[pack] = {services:[],routes:[],nodes:[]};
+        }
+        docPackages[pack][section].push(doc);
+    }
+
+    /**
+     * get Node package by checking its upath or path attribute
+     * 
+     * @param {{path?,upath?}} desc 
+     * @returns {string}
+     */
+    getNodePackageId(desc)
+    {
+        // upath based
+        if (desc.upath) 
+        {
+            let pack = desc.upath.split("@");
+            if (pack.length > 1) {
+                return pack[1];
+            }
+        }
+    
+        // path based
+        if (desc.path) 
+        {
+            if (desc.path.startsWith("@nxn/db")) {
+                return "nxn/db";
+            }
+            if (desc.path.startsWith("@nxn/files")) {
+                return "nxn/files";
+            }
+            if (desc.path.startsWith("@nxn/boot")) {
+                return "nxn/boot";
+            }
+    
+            let pathParts = desc.path.split("/");
+            pathParts.pop(); // Remove the last part (presumably the filename)
+            return pathParts.join("/"); // Join the rest of the path
+        }
+    
+        return "other";
+    }
+    
+    /**
+     * returns item mmd desc in flow
+     * 
      * @param {*} s 
      * @param {*} id 
      * @param {*} desc 
      * @param {*} cls 
-     * @returns {{s,sdoc}}
+     * @returns {string}
      */
-    addDependency(s,id,desc,cls=null) 
+    getMermaidItem(id,desc,cls=null) 
     {
         // header item in flow
+        let s = "";
+
+        cls = (cls||"")+"Cls";
         let name = id;
-        if(cls == "route")
+        if(cls == "routeCls")
             s+="    "+name+"(\""+name+"\")";
         else
             s+="    "+name+"[\""+name+"\"]";
@@ -162,40 +239,54 @@ pad+`generates a diagram of components of the application in mermaid form.
         return s;
     }
 
-    createGraphLine(nodes,index,direction="TB")
+    /**
+     * create a line of nodes ("chunk") by adding mermaid nodes to a subgraph
+     * 
+     * @param {*} nodes list of nodes to add to the line
+     * @param {*} index chunk index
+     * @param {*} direction mermaid graph direction (TB by deft)
+     * @returns {string}
+     */
+    createSubGraph(nodes,index,graphName="Documation",direction="TB",style="fill:#fff,stroke:#fff,color:#fff")
     {
         let tpl = `
-subgraph Documentation_${index}
+subgraph ${graphName}
 direction ${direction};
 `;
         tpl+= nodes.join("\n");
 
         tpl += "\nend\n";
 
-        tpl += `style Documentation_${index} fill:#fff,stroke:#fff,color:#fff\n`;
+        tpl += `style ${graphName} ${style}\n`;
 
         return tpl;
     }
 
     /**
-     * returns item mmd desc in flow and also in doc
-     * @param {*} s 
+     * returns item documentation (in mermaid format) for an item node
+     * Displays it name, package and description.
+     * Use colour/shape formating of node type (service, route, etc.)
+     * 
      * @param {*} id 
      * @param {*} desc 
      * @param {*} cls 
-     * @returns {{s,sdoc}}
+     * @returns {string}
      */
-    addDoc(sdoc,id,desc,cls=null)
+    getDocItemNode(id,desc,cls=null)
     {
+        let sdoc = "";
+
         // header item in doc
         let nameDoc = id;
         desc = desc || {};
+        cls = (cls||"")+"Cls";
+
         if(cls)
         {
             nameDoc +="_doc";        
 
             let path = desc.upath || desc.path;
-            if(cls=="route")
+            if(cls=="routeCls")
             {
                 sdoc+="    "+nameDoc+"(\"<b>"+nameDoc+"</b><br><br>";
                 if(path)
@@ -224,10 +315,182 @@ direction ${direction};
         return sdoc;
     }
 
+    /**
+     * generate doc for all nodes
+     * 
+     * @param {*} docs 
+     * @returns 
+     */
+    getGlobalDoc(docs) 
+    {
+        // header
+        let sdoc = templateDoc;
+
+        // group by 5
+        let chunks = array_chunk(docs, 5);
+        let ci = 0;
+        
+        // generate line
+        sdoc += chunks.map
+            (
+                chunk => this.createSubGraph(
+                    chunk,
+                    ci++,
+                    "Documentation_"+ci,
+                    "TB",
+                    "fill:#fff,stroke:#fff,color:#fff")
+            ).join(''); // Join the array elements into a single string
+
+        // footer
+        sdoc += templateDocEnd;     
+        return sdoc;   
+    }
+
+    /**
+     * generate all packages in a graph
+     * 
+     * @param {*} docs 
+     * @returns 
+     */
+    getPackagesGraph(docPackages)
+    {
+        let packagesGraph=[];
+
+        for (let packId in docPackages)
+        {
+            // create package graph
+            let pack = docPackages[packId];
+
+            let packGraph = this.getPackageGraph(packId,pack);
+
+            // push pack
+            packagesGraph.push(packGraph);
+        }
+
+        // header
+        let sdoc = templateDoc;
+        
+        // add content
+        sdoc += packagesGraph.join("\n\n");
+
+        // footer
+        sdoc += templateDocEnd;     
+        return sdoc;          
+    }
+
+    /**
+     * get graph for a package
+     * 
+     * @param {*} packId 
+     * @param {*} pack 
+     * @returns {string}
+     */
+    getPackageGraph(packId,pack) 
+    {
+        let sections = [];
+
+        // count sections in package
+        let nbSections = 0;
+        for(let sectionId of ["routes","services","nodes"])
+        {
+            if(pack[sectionId].length)
+                nbSections++;
+        }   
+
+        // add sections
+        // NB. we try to fit sections with 5 items per line.
+        // if only one section, we stretch it to 5, else 3.
+        for(let sectionId of ["routes","services","nodes"])
+        {
+            let nodes = pack[sectionId];
+            if(nodes.length)
+            {   
+                let maxItemsperline = nbSections ==1 ? 5 : 3;
+
+                // add section graph for that package
+                let sectionGraph = this.getSectionDocGraph(packId,sectionId,nodes,maxItemsperline);
+                sections.push(sectionGraph);
+            }    
+        }
+
+        // create package graph
+        let packGraph = this.createSubGraph(sections,
+            1,
+            packId,
+            "TB",
+            "fill:#f0f0f0,stroke:#eee,color:#444");
+            
+        return packGraph;
+    }
+
+    /**
+     * get graph for a package section
+     * 
+     * @param {*} packId 
+     * @param {*} sectionId 
+     * @param {*} nodeDocs 
+     * @param {number} [maxItemsperline=3] 
+     * @returns {string}
+     */
+    getSectionDocGraph(packId,sectionId,nodeDocs,maxItemsperline=3) 
+    {
+        // create section content
+
+        // group nodes by 5
+        let chunks = array_chunk(nodeDocs, maxItemsperline);
+        let ci = 0;
+
+        let id = packId+"_"+sectionId;
+        
+        // generate line
+        let chunksDocs = chunks
+            .map(
+                chunk => this.createSubGraph(
+                    chunk,
+                    ci++,
+                    id+ci,
+                    "TB",
+                    "fill:#fff,stroke:#fff,color:#fff")
+            )
+            .join("\n"); // Join the array elements into a single string
+
+        let sectionContent = chunksDocs;        
+
+        // create section graph
+        let sectionGraph = this.createSubGraph(
+            [sectionContent],
+            1,
+            packId+":"+sectionId,
+            "LR",
+            "fill:#f0f0f0,stroke:#eee,color:#444"); 
+            
+        return sectionGraph;
+    }
+
+    getSectionDocContent(packId,section,docs) {
+        // group by 5
+        let chunks = array_chunk(docs, 5);
+        let ci = 0;
+
+        let id = packId+"_"+section;
+        
+        // generate line
+        let chunksDocs = chunks
+            .map(
+                chunk => this.createSubGraph(
+                    chunk,
+                    ci++,
+                    id+ci,
+                    "LR",
+                    "fill:#fff,stroke:#fff,color:#fff")
+            )
+            .join("\n"); // Join the array elements into a single string
+
+        return chunksDocs;
+    }
 }
 
 module.exports = new Generator();
-
 
 function array_chunk(array, chunkSize) {
     const result = [];
