@@ -101,13 +101,14 @@ pad+`generates a diagram of components of the application in mermaid form.
             configPath += ".yml";
 
         this.configPath = params.toDir+configPath;
-        const yamlObj = await yamlEditor.load(this.configPath,false);
+        const yamlObj1 = await yamlEditor.load(this.configPath,false);
 
         // global doc of all items
         let docs = [];
 
         // doc by package
         let docPackages = {}
+        let yamlObj = this.loadComponents(yamlObj1,yamlObj1);
 
         if(yamlObj.routes?.configuration)
         {
@@ -158,6 +159,40 @@ pad+`generates a diagram of components of the application in mermaid form.
         }
 
         return true;
+    }
+
+    loadComponents(config,res) 
+    {
+        if(config.components)
+        {
+            let config2 = config.components.configuration || config.components;
+            for(let k in config2)
+            {
+                let node = config2[k];
+                if(node.components)
+                {
+                    let nodes2 = this.loadComponents(node,res);
+                    res = {...res, ...nodes2}
+                }
+
+                for(let section of ["routes","services","nodes"])
+                {
+                    if(node[section])
+                        res[section].configuration = 
+                        {
+                            ...res[section].configuration,
+                            ...(node[section].configuration || node[section])
+                        }
+                }
+
+                if(k == "routes" || k == "services" || k == "nodes")
+                {
+                    res[k].configuration = {...(res[k]||{}),...node}
+                }
+            }
+        }
+
+        return res;
     }
 
     saveDoc(s,withFlow,withModules,path) 
