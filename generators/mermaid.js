@@ -1,6 +1,7 @@
 const fs = require('@nxn/files');
 const yamlEditor = require("../services/yaml_editor");
 const BaseGenerator = require("./_baseGenerator")
+const configSce = require('@nxn/config');
 
 const template = `graph LR;
 subgraph main
@@ -101,7 +102,8 @@ pad+`generates a diagram of components of the application in mermaid form.
             configPath += ".yml";
 
         this.configPath = params.toDir+configPath;
-        const yamlObj1 = await yamlEditor.load(this.configPath,false);
+        // const yamlObj1 = await yamlEditor.load(this.configPath,false);
+        const yamlObj1 = configSce.loadConfig(this.configPath,[],process.env);
 
         // global doc of all items
         let docs = [];
@@ -163,31 +165,38 @@ pad+`generates a diagram of components of the application in mermaid form.
 
     loadComponents(config,res) 
     {
-        if(config.components)
+        for(let compSection of ["components","modules"])
         {
-            let config2 = config.components.configuration || config.components;
-            for(let k in config2)
+            if(config[compSection])
             {
-                let node = config2[k];
-                if(node.components)
+                let config2 = config[compSection].configuration || config[compSection];
+                for(let k in config2)
                 {
-                    let nodes2 = this.loadComponents(node,res);
-                    res = {...res, ...nodes2}
-                }
+                    let node = config2[k];
 
-                for(let section of ["routes","services","nodes"])
-                {
-                    if(node[section])
-                        res[section].configuration = 
-                        {
-                            ...res[section].configuration,
-                            ...(node[section].configuration || node[section])
-                        }
-                }
+                    // import routes/services/nodes from component
+                    for(let section of ["routes","services","nodes"])
+                    {
+                        if(node[section])
+                            res[section].configuration = 
+                            {
+                                ...res[section].configuration,
+                                ...(node[section].configuration || node[section])
+                            }
+                    }
 
-                if(k == "routes" || k == "services" || k == "nodes")
-                {
-                    res[k].configuration = {...(res[k]||{}),...node}
+                    // load sub components
+                    if(node.components || node.modules)
+                    {
+                        let nodes2 = this.loadComponents(node,res);
+                        res = {...res, ...nodes2}
+                    }
+
+                    // import other nodes
+                    if(k == "routes" || k == "services" || k == "nodes")
+                    {
+                        res[k].configuration = {...(res[k]||{}),...node}
+                    }
                 }
             }
         }
