@@ -52,7 +52,7 @@ class Generator extends BaseGenerator
 
     usage(pad=' ') {
         return {
-            usage:"",
+            usage:"(config file name)",
             description:
 pad+`generates a diagram of components of the application in mermaid form.
 `
@@ -61,10 +61,21 @@ pad+`generates a diagram of components of the application in mermaid form.
 
     async generate(params) 
     {
-        let {force,path} = params;
+        let {force,path,name} = params;
         let s = template;
 
-        this.configPath = params.toDir+'/client_data/default/config_default.yml';
+        let configPath = name ? name : "config_default.yml";
+
+        if(name.search("config_")== -1)
+            configPath = "config_"+configPath;
+        
+        if(name.search("client_data")== -1)
+            configPath = "/client_data/default/"+configPath;
+        
+        if(!name.endsWith(".yml"))
+            configPath += ".yml";
+
+        this.configPath = params.toDir+configPath;
         const yamlObj = await yamlEditor.load(this.configPath,false);
 
         // global doc of all items
