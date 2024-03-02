@@ -4,7 +4,7 @@ subgraph main
 
     subgraph Application
         direction LR;
-        classDef nodeCls fill:#eee,stroke:#eee,color:#333
+        classDef nodeCls fill:#C080C0,stroke:#eee,color:#fff
         classDef routeCls fill:#2080D0,stroke:#eee,color:#fff
         classDef nodCls fill:#C080C0,stroke:#eee,color:#fff
         classDef serviceCls fill:#A9C9EB,stroke:#eee,color:#444
@@ -13,10 +13,6 @@ subgraph main
     test1["test1"]:::serviceCls
     test1_locale["test1_locale"]:::serviceCls
     firestore["firestore"]:::serviceCls
-    test1_model["test1_model"]:::serviceCls
-    test1_model -- db -->firestore;
-    test1_model -- db -->mysql;
-    test1_model -- locale -->test1_locale;
     mysql["mysql"]:::serviceCls
     test4["test4"]:::serviceCls
     test5_locale["test5_locale"]:::serviceCls
@@ -24,6 +20,7 @@ subgraph main
     test5_model --> db;
     test5_model -- locale -->test5_locale;
     test5["test5"]:::serviceCls
+    test1_node["test1_node"]:::nodeCls
 end
 
     subgraph Legend

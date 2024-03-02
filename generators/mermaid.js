@@ -9,7 +9,7 @@ subgraph main
 
     subgraph Application
         direction LR;
-        classDef nodeCls fill:#eee,stroke:#eee,color:#333
+        classDef nodeCls fill:#C080C0,stroke:#eee,color:#fff
         classDef routeCls fill:#2080D0,stroke:#eee,color:#fff
         classDef nodCls fill:#C080C0,stroke:#eee,color:#fff
         classDef serviceCls fill:#A9C9EB,stroke:#eee,color:#444
