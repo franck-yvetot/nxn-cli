@@ -2,32 +2,38 @@ const fs = require('@nxn/files');
 const yamlEditor = require("../services/yaml_editor");
 const BaseGenerator = require("./_baseGenerator")
 
-const template = `graph TB;
+const template = `graph LR;
 subgraph main
-
-subgraph Application
     direction LR;
-    classDef nodeCls fill:#eee,stroke:#eee,color:#333
-    classDef routeCls fill:#2080D0,stroke:#eee,color:#fff
-    classDef nodCls fill:#C080C0,stroke:#eee,color:#fff
-    classDef serviceCls fill:#A9C9EB,stroke:#eee,color:#444
+
+    subgraph Application
+        direction LR;
+        classDef nodeCls fill:#eee,stroke:#eee,color:#333
+        classDef routeCls fill:#2080D0,stroke:#eee,color:#fff
+        classDef nodCls fill:#C080C0,stroke:#eee,color:#fff
+        classDef serviceCls fill:#A9C9EB,stroke:#eee,color:#444
 `;
 const templateEnd = `end
 
-subgraph Legend
-    Route:::routeCls
-    Service:::serviceCls
-    Node:::nodCls
+    subgraph Legend
+        Route:::routeCls
+        Service:::serviceCls
+        Node:::nodCls
+    end
+
 end
 
 DOCUMENTATION_GRAPH
 
-end
-
-
 style Application fill:#fff,stroke:#999,color:#222
 style Legend fill:#eee,stroke:#eee,color:#333
 style main fill:#eee,stroke:#eee,color:#eee
+`;
+
+const templateOnlyModules = `graph TB;
+
+`;
+const templateEndOnlyModules = `
 `;
 
 const templateDoc = `subgraph Modules
@@ -61,18 +67,37 @@ pad+`generates a diagram of components of the application in mermaid form.
 
     async generate(params) 
     {
-        let {force,path,name} = params;
+        let {force,path,args} = params;
         let s = template;
+        let name = "";
+
+        // display flows and modules?
+        let withFlow = false;
+        let withModules = false;
+        for(let arg of args)
+        {
+            if(arg == "mermaid")
+                continue;
+            if(arg.search(/modules?/i)!=-1)
+                withModules = true;
+            else if(arg.search(/flows?/i)!=-1)
+                withFlow = true;
+            else
+                name = arg;
+        }
+
+        if(!withFlow && !withModules)
+            withFlow = true;
 
         let configPath = name ? name : "config_default.yml";
 
-        if(name.search("config_")== -1)
+        if(configPath.search("config_")== -1)
             configPath = "config_"+configPath;
         
-        if(name.search("client_data")== -1)
+        if(configPath.search("client_data")== -1)
             configPath = "/client_data/default/"+configPath;
         
-        if(!name.endsWith(".yml"))
+        if(!configPath.endsWith(".yml"))
             configPath += ".yml";
 
         this.configPath = params.toDir+configPath;
@@ -118,22 +143,47 @@ pad+`generates a diagram of components of the application in mermaid form.
         s+= templateEnd;        
     
         // let sdoc = this.getGlobalDoc(docs);
+        if(withFlow)
+        {
+            s = s.replace("DOCUMENTATION_GRAPH","");
+            this.saveDoc(s,true,false,params.toDir+'/client_data/default/'); 
+        }
         
-        let sdoc2 = this.getPackagesGraph(docPackages);
+        if(withModules)
+        {
+            s = templateOnlyModules;
+            s += this.getPackagesGraph(docPackages);
+            s+= templateEndOnlyModules;
+            this.saveDoc(s,false,true,params.toDir+'/client_data/default/'); 
+        }
 
-        s = s.replace("DOCUMENTATION_GRAPH",sdoc2);
+        return true;
+    }
 
-        let fullPath = params.toDir+'/client_data/default/config_default.README.mmd';
+    saveDoc(s,withFlow,withModules,path) 
+    {
+        let fullPath = path;        
+        if(!withFlow && withModules)
+        {
+            fullPath += 'config_default.modules.README.mmd';
+        }
+        else
+        {
+            fullPath += 'config_default.README.mmd';
+        }
+
         fullPath = fullPath.replace("//","/");
 
-        try {
+        try 
+        {
             fs.writeFileAsync(fullPath,s,true);    
-        } catch (error) {
+        } 
+        catch (error) 
+        {
             console.error(error);
         }
 
         console.log("Generated mermaid file "+fullPath);
-        return true;
     }
 
     processItem(id,desc,type,section,docs,docPackages)
