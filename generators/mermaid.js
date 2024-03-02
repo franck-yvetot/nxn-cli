@@ -282,22 +282,86 @@ pad+`generates a diagram of components of the application in mermaid form.
         if(cls)
             s +=":::"+cls+"\n";        
 
+        let injections = this.getInjections(desc) 
+        for(let i=0;i<injections.length;i++)
+        {
+            let injection = injections[i];
+            if(injection.link)
+                s += "    "+id+" -- "+injection.link+" -->"+injection.to+";\n"
+            else
+                s += "    "+id+" --> "+injection.to+";\n"
+
+        }
+        /*
         if(desc.injections)
         {
             for(let inj in desc.injections)
             {
                 let deps = desc.injections[inj];
+                if(deps?.split)
+                {
+                    let aDep = deps.split(",");
+                    for(let dep of aDep)
+                    {
+                        if(dep != inj)
+                            s += "    "+id+" -- "+inj+" -->"+dep+";\n"
+                        else
+                            s += "    "+id+" --> "+dep+";\n"
+                    }
+                }
+                else if(typeof deps == "Object")
+                {
+
+                }
+                else                 
+                {
+                    console.log("missing injections for "+name);
+                }
+            }
+        }
+        */
+        return s;
+    }
+
+    /**
+     * get injections from node
+     * 
+     * @param {*} desc node desc 
+     */
+    getInjections(desc) 
+    {
+        let injs = [];
+
+        for(let inj in desc.injections)
+        {
+            if(inj == "$config")
+                continue;
+
+            let deps = desc.injections[inj];
+            if(deps?.split)
+            {
                 let aDep = deps.split(",");
                 for(let dep of aDep)
                 {
                     if(dep != inj)
-                        s += "    "+id+" -- "+inj+" -->"+dep+";\n"
+                        injs.push({link:inj,to:dep});
                     else
-                        s += "    "+id+" --> "+dep+";\n"
+                        injs.push({link:null,to:dep});
                 }
             }
+            else if(typeof deps == "object")
+            {
+                for(let k in deps) {
+                    injs.push({link:k,to:deps[k]});
+                }
+            }
+            else                 
+            {
+                console.log("missing injections for "+desc.id);
+            }
         }
-        return s;
+
+        return injs;
     }
 
     /**
