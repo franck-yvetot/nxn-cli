@@ -7,22 +7,22 @@ subgraph Application
     classDef route fill:#2080D0,stroke:#eee,color:#fff
     classDef nod fill:#C080C0,stroke:#eee,color:#fff
     classDef service fill:#A9C9EB,stroke:#eee,color:#444
-    test1_route:::route
-    test5_route:::route
-    test1:::service
-    test1_locale:::service
-    firestore:::service
-    test1_model:::service
+    test1_route("test1_route"):::route
+    test5_route("test5_route"):::route
+    test1["test1"]:::service
+    test1_locale["test1_locale"]:::service
+    firestore["firestore"]:::service
+    test1_model["test1_model"]:::service
     test1_model -- db -->firestore;
     test1_model -- db -->mysql;
     test1_model -- locale -->test1_locale;
-    mysql:::service
-    test4:::service
-    test5_locale:::service
-    test5_model:::service
+    mysql["mysql"]:::service
+    test4["test4"]:::service
+    test5_locale["test5_locale"]:::service
+    test5_model["test5_model"]:::service
     test5_model --> db;
     test5_model -- locale -->test5_locale;
-    test5:::service
+    test5["test5"]:::service
 end
 
 subgraph Legend
@@ -30,8 +30,59 @@ subgraph Legend
     Service:::service
     Node:::nod
 end
+
+subgraph Documentation
+    direction LR;
+    classDef node fill:#eee,stroke:#eee,color:#333
+    classDef route fill:#2080D0,stroke:#eee,color:#fff
+    classDef nod fill:#C080C0,stroke:#eee,color:#fff
+    classDef service fill:#A9C9EB,stroke:#eee,color:#444
+
+
+subgraph Documentation_0
+direction TB;
+    test1_route_doc("<b>test1_route_doc</b><br><br><i>test1@app1</i><br><br>"):::route
+
+    test5_route_doc("<b>test5_route_doc</b><br><br><i>test5@app1</i><br><br>"):::route
+
+    test1_doc["<b>test1_doc</b><br><br>test1@app1<br><br>"]:::service
+
+    test1_locale_doc["<b>test1_locale_doc</b><br><br>locale@nxn/db<br><br>"]:::service
+
+    firestore_doc["<b>firestore_doc</b><br><br>firestore@googleapi<br><br>"]:::service
+
+end
+style Documentation_0 fill:#fff,stroke:#fff,color:#fff
+
+subgraph Documentation_1
+direction TB;
+    test1_model_doc["<b>test1_model_doc</b><br><br>@nxn/db/db_model.service<br><br>"]:::service
+
+    mysql_doc["<b>mysql_doc</b><br><br>@nxn/db/mysql.service<br><br>"]:::service
+
+    test4_doc["<b>test4_doc</b><br><br>test4@app1<br><br>"]:::service
+
+    test5_locale_doc["<b>test5_locale_doc</b><br><br>@nxn/db/locale.service<br><br>"]:::service
+
+    test5_model_doc["<b>test5_model_doc</b><br><br>@nxn/db/db_model.service<br><br>"]:::service
+
+end
+style Documentation_1 fill:#fff,stroke:#fff,color:#fff
+
+subgraph Documentation_2
+direction TB;
+    test5_doc["<b>test5_doc</b><br><br>test5@app1<br><br>"]:::service
+
+end
+style Documentation_2 fill:#fff,stroke:#fff,color:#fff
 end
 
+
+
+end
+
+
 style Application fill:#fff,stroke:#999,color:#222
+style Documentation fill:#fff,stroke:#999,color:#222
 style Legend fill:#eee,stroke:#eee,color:#333
 style main fill:#eee,stroke:#eee,color:#eee
