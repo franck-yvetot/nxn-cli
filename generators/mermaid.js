@@ -240,29 +240,6 @@ pad+`generates a diagram of components of the application in mermaid form.
     }
 
     /**
-     * create a line of nodes ("chunk") by adding mermaid nodes to a subgraph
-     * 
-     * @param {*} nodes list of nodes to add to the line
-     * @param {*} index chunk index
-     * @param {*} direction mermaid graph direction (TB by deft)
-     * @returns {string}
-     */
-    createSubGraph(nodes,index,graphName="Documation",direction="TB",style="fill:#fff,stroke:#fff,color:#fff")
-    {
-        let tpl = `
-subgraph ${graphName}
-direction ${direction};
-`;
-        tpl+= nodes.join("\n");
-
-        tpl += "\nend\n";
-
-        tpl += `style ${graphName} ${style}\n`;
-
-        return tpl;
-    }
-
-    /**
      * returns item documentation (in mermaid format) for an item node
      * Displays it name, package and description.
      * Use colour/shape formating of node type (service, route, etc.)
@@ -288,7 +265,7 @@ direction ${direction};
             let path = desc.upath || desc.path;
             if(cls=="routeCls")
             {
-                sdoc+="    "+nameDoc+"(\"<b>"+nameDoc+"</b><br><br>";
+                sdoc+="    "+nameDoc+"(\"<b>"+id+"</b><br><br>";
                 if(path)
                     sdoc+="<i>"+path+"</i><br><br>";
                 
@@ -299,7 +276,7 @@ direction ${direction};
             }
             else
             {
-                sdoc+="    "+nameDoc+"[\"<b>"+nameDoc+"</b><br><br>";
+                sdoc+="    "+nameDoc+"[\"<b>"+id+"</b><br><br>";
                 if(path)
                     sdoc+=path+"<br><br>";
                 
@@ -333,7 +310,7 @@ direction ${direction};
         // generate line
         sdoc += chunks.map
             (
-                chunk => this.createSubGraph(
+                chunk => this._createSubGraph(
                     chunk,
                     ci++,
                     "Documentation_"+ci,
@@ -397,6 +374,12 @@ direction ${direction};
                 nbSections++;
         }   
 
+        let sectionLabels = {
+            routes:"Routes",
+            services:"Services",
+            nodes:"Nodes"
+        }
+
         // add sections
         // NB. we try to fit sections with 5 items per line.
         // if only one section, we stretch it to 5, else 3.
@@ -406,15 +389,22 @@ direction ${direction};
             if(nodes.length)
             {   
                 let maxItemsperline = nbSections ==1 ? 5 : 3;
+                let sectionLabel = sectionLabels[sectionId] || sectionId;
 
                 // add section graph for that package
-                let sectionGraph = this.getSectionDocGraph(packId,sectionId,nodes,maxItemsperline);
+                let sectionGraph = this.getSectionDocGraph(
+                    packId,
+                    sectionId,
+                    sectionLabel,
+                    nodes,
+                    maxItemsperline);
+
                 sections.push(sectionGraph);
             }    
         }
 
         // create package graph
-        let packGraph = this.createSubGraph(sections,
+        let packGraph = this._createSubGraph(sections,
             1,
             packId,
             "TB",
@@ -424,7 +414,7 @@ direction ${direction};
     }
 
     /**
-     * get graph for a package section
+     * build graph for a package section
      * 
      * @param {*} packId 
      * @param {*} sectionId 
@@ -432,7 +422,7 @@ direction ${direction};
      * @param {number} [maxItemsperline=3] 
      * @returns {string}
      */
-    getSectionDocGraph(packId,sectionId,nodeDocs,maxItemsperline=3) 
+    getSectionDocGraph(packId,sectionId,sectionLabel,nodeDocs,maxItemsperline=3) 
     {
         // create section content
 
@@ -445,7 +435,7 @@ direction ${direction};
         // generate line
         let chunksDocs = chunks
             .map(
-                chunk => this.createSubGraph(
+                chunk => this._createSubGraph(
                     chunk,
                     ci++,
                     id+ci,
@@ -456,38 +446,51 @@ direction ${direction};
 
         let sectionContent = chunksDocs;        
 
-        // create section graph
-        let sectionGraph = this.createSubGraph(
+        // wrap as a sub graph
+        let sectionGraph = this._createSubGraph(
             [sectionContent],
             1,
             packId+":"+sectionId,
             "LR",
-            "fill:#f0f0f0,stroke:#eee,color:#444"); 
+            "fill:#f0f0f0,stroke:#eee,color:#444",
+            sectionLabel); 
             
         return sectionGraph;
     }
 
-    getSectionDocContent(packId,section,docs) {
-        // group by 5
-        let chunks = array_chunk(docs, 5);
-        let ci = 0;
 
-        let id = packId+"_"+section;
-        
-        // generate line
-        let chunksDocs = chunks
-            .map(
-                chunk => this.createSubGraph(
-                    chunk,
-                    ci++,
-                    id+ci,
-                    "LR",
-                    "fill:#fff,stroke:#fff,color:#fff")
-            )
-            .join("\n"); // Join the array elements into a single string
+    /**
+     * create a line of nodes ("chunk") by adding mermaid nodes to a subgraph
+     * 
+     * @param {*} nodes list of nodes to add to the line
+     * @param {*} index chunk index
+     * @param {*} direction mermaid graph direction (TB by deft)
+     * @returns {string}
+     */
+    _createSubGraph(nodes,
+        index,
+        graphId="Documention",
+        direction="TB",
+        style="fill:#fff,stroke:#fff,color:#fff",
+        graphLabel = null
+        )
+    {
+        let graphName = graphId;
+        if(graphLabel)
+            graphName +="[\""+graphLabel+"\"]";
 
-        return chunksDocs;
-    }
+        let tpl = `
+subgraph ${graphName}
+direction ${direction};
+`;
+        tpl+= nodes.join("\n");
+
+        tpl += "\nend\n";
+
+        tpl += `style ${graphId} ${style}\n`;
+
+        return tpl;
+    }    
 }
 
 module.exports = new Generator();
