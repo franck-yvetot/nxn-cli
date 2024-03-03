@@ -2,8 +2,6 @@ const fs = require('@nxn/files');
 const yamlEditor = require("../services/yaml_editor");
 const BaseGenerator = require("./_baseGenerator")
 const configSce = require('@nxn/config');
-
-// boot reads a configuration
 const {bootSce} = require("@nxn/boot");
 
 const template = `graph LR;
@@ -69,6 +67,24 @@ pad+`generates a diagram of components of the application in mermaid form.
         };
     }
 
+    getPaths(params)
+    {
+        let {force,path,args} = params;
+        const myArgs = args;
+
+        // ENV
+        const env = myArgs[1] || process.env.NODE_ENV || 'dev';
+
+        let dirname = params.toDir
+
+        let client = myArgs[0] || 'default';
+        global.__clientDir = `${dirname}/client_data/${client}/`;
+
+        const configPath = [global.__clientDir+'/env/'+env,__clientDir,dirname];
+
+        return configPath;
+    }
+
     async generate(params) 
     {
         let {force,path,args} = params;
@@ -78,6 +94,7 @@ pad+`generates a diagram of components of the application in mermaid form.
         // display flows and modules?
         let withFlow = false;
         let withModules = false;
+        let args2 = [];
         for(let arg of args)
         {
             if(arg == "mermaid")
@@ -86,13 +103,19 @@ pad+`generates a diagram of components of the application in mermaid form.
                 withModules = true;
             else if(arg.search(/flows?/i)!=-1)
                 withFlow = true;
-            else
-                name = arg;
+            else 
+            {
+                if(!name)
+                    name = arg;
+
+                args2.push(arg);
+            }
         }
 
         if(!withFlow && !withModules)
             withFlow = true;
 
+        /*
         let configPath = name ? name : "config_default.yml";
 
         if(configPath.search("config_")== -1)
@@ -105,9 +128,18 @@ pad+`generates a diagram of components of the application in mermaid form.
             configPath += ".yml";
 
         this.configPath = params.toDir+configPath;
+        */
+        // CONFIG NAME : conf_<config name>.yml files to "run"
+        let configName = name || 'config_default';
+        if(configName.search(/config_/)==-1)
+            configName = 'config_'+configName;
+        
+        params.args = args2;
+        const configPath = this.getPaths(params);
+
         // const yamlObj1 = await yamlEditor.load(this.configPath,false);
-        // const yamlObj1 = configSce.loadConfig(this.configPath,[],process.env);
-        const yamlObj = await bootSce.loadConfig(this.configPath,[],process.env);
+        // const yamlObj1 = configSce.loadConfig(configName,configPath,process.env);
+        let yamlObj = await bootSce.loadConfig(configName,configPath,process.env);
 
         // global doc of all items
         let docs = [];

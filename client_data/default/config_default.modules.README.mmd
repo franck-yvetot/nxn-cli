@@ -44,6 +44,22 @@ style app1_services1 fill:#fff,stroke:#fff,color:#fff
 end
 style app1:services fill:#f0f0f0,stroke:#eee,color:#444
 
+
+subgraph app1:nodes["Nodes"]
+direction LR;
+
+subgraph app1_nodes1
+direction TB;
+    test1_node_doc["<b>test1_node</b><br><br>test1@app1<br><br>"]:::nodeCls
+
+    test4_node_doc["<b>test4_node</b><br><br>test4@app1<br><br>"]:::nodeCls
+
+end
+style app1_nodes1 fill:#fff,stroke:#fff,color:#fff
+
+end
+style app1:nodes fill:#f0f0f0,stroke:#eee,color:#444
+
 end
 style app1 fill:#f0f0f0,stroke:#eee,color:#444
 
@@ -59,16 +75,24 @@ subgraph nxn/db_services1
 direction TB;
     test1_locale_doc["<b>test1_locale</b><br><br>locale@nxn/db<br><br>"]:::serviceCls
 
-    test1_model_doc["<b>test1_model</b><br><br>@nxn/db/db_model.service<br><br>"]:::serviceCls
-
     mysql_doc["<b>mysql</b><br><br>@nxn/db/mysql.service<br><br>"]:::serviceCls
 
     test5_locale_doc["<b>test5_locale</b><br><br>@nxn/db/locale.service<br><br>"]:::serviceCls
 
     test5_model_doc["<b>test5_model</b><br><br>@nxn/db/db_model.service<br><br>"]:::serviceCls
 
+    test22_locale_doc["<b>test22_locale</b><br><br>@nxn/db/locale.service<br><br>"]:::serviceCls
+
 end
 style nxn/db_services1 fill:#fff,stroke:#fff,color:#fff
+
+
+subgraph nxn/db_services2
+direction TB;
+    test22_model_doc["<b>test22_model</b><br><br>@nxn/db/db_model.service<br><br>"]:::serviceCls
+
+end
+style nxn/db_services2 fill:#fff,stroke:#fff,color:#fff
 
 end
 style nxn/db:services fill:#f0f0f0,stroke:#eee,color:#444
