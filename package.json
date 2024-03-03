@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/franck-yvetot/nxn-cli#readme",
   "dependencies": {
-    "@nxn/boot": "^1.0.58",
+    "@nxn/boot": "^1.0.71",
     "@nxn/config": "^1.0.37",
     "@nxn/ext": "^1.0.27",
     "@nxn/files": "^1.0.7",

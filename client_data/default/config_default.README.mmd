@@ -20,7 +20,12 @@ subgraph main
     test5_model --> db;
     test5_model -- locale -->test5_locale;
     test5["test5"]:::serviceCls
+    test22_locale["test22_locale"]:::serviceCls
+    test22_model["test22_model"]:::serviceCls
+    test22_model --> db;
+    test22_model -- locale -->test22_locale;
     test1_node["test1_node"]:::nodeCls
+    test4_node["test4_node"]:::nodeCls
 end
 
     subgraph Legend

@@ -3,6 +3,9 @@ const yamlEditor = require("../services/yaml_editor");
 const BaseGenerator = require("./_baseGenerator")
 const configSce = require('@nxn/config');
 
+// boot reads a configuration
+const {bootSce} = require("@nxn/boot");
+
 const template = `graph LR;
 subgraph main
     direction LR;
@@ -103,14 +106,15 @@ pad+`generates a diagram of components of the application in mermaid form.
 
         this.configPath = params.toDir+configPath;
         // const yamlObj1 = await yamlEditor.load(this.configPath,false);
-        const yamlObj1 = configSce.loadConfig(this.configPath,[],process.env);
+        // const yamlObj1 = configSce.loadConfig(this.configPath,[],process.env);
+        const yamlObj = await bootSce.loadConfig(this.configPath,[],process.env);
 
         // global doc of all items
         let docs = [];
 
         // doc by package
         let docPackages = {}
-        let yamlObj = this.loadComponents(yamlObj1,yamlObj1);
+        // let yamlObj = this.loadComponents(yamlObj1,yamlObj1);
 
         if(yamlObj.routes?.configuration)
         {
