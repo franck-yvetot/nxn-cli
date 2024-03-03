@@ -71,18 +71,19 @@ pad+`generates a diagram of components of the application in mermaid form.
     {
         let {force,path,args} = params;
         const myArgs = args;
-
-        // ENV
-        const env = myArgs[1] || process.env.NODE_ENV || 'dev';
-
         let dirname = params.toDir
 
         let client = myArgs[0] || 'default';
         global.__clientDir = `${dirname}/client_data/${client}/`;
 
+        let configName = myArgs[1] || "default";
+
+        // ENV
+        const env = myArgs[2] || process.env.NODE_ENV || 'dev';
+
         const configPath = [global.__clientDir+'/env/'+env,__clientDir,dirname];
 
-        return configPath;
+        return {configName,configPath};
     }
 
     async generate(params) 
@@ -104,12 +105,7 @@ pad+`generates a diagram of components of the application in mermaid form.
             else if(arg.search(/flows?/i)!=-1)
                 withFlow = true;
             else 
-            {
-                if(!name)
-                    name = arg;
-
                 args2.push(arg);
-            }
         }
 
         if(!withFlow && !withModules)
@@ -129,14 +125,14 @@ pad+`generates a diagram of components of the application in mermaid form.
 
         this.configPath = params.toDir+configPath;
         */
+
+        params.args = args2;
+        let {configName,configPath} = this.getPaths(params);
+
         // CONFIG NAME : conf_<config name>.yml files to "run"
-        let configName = name || 'config_default';
         if(configName.search(/config_/)==-1)
             configName = 'config_'+configName;
         
-        params.args = args2;
-        const configPath = this.getPaths(params);
-
         // const yamlObj1 = await yamlEditor.load(this.configPath,false);
         // const yamlObj1 = configSce.loadConfig(configName,configPath,process.env);
         let yamlObj = await bootSce.loadConfig(configName,configPath,process.env);
