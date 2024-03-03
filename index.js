@@ -5,6 +5,12 @@ const generators = require("./generators");
 const { execSync } = require('child_process');
 const npmVersion = execSync('npm --version').toString().trim();
 
+// Importer le module dotenv
+const dotenv = require('dotenv');
+
+// Charger les variables d'environnement du fichier .env
+dotenv.config();
+
 const run = async () => {
 
     console.log(`npm version: ${npmVersion}`);
