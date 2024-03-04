@@ -1,6 +1,6 @@
 {
   "name": "@nxn/cli",
-  "version": "1.0.92",
+  "version": "1.0.93",
   "description": "generators for applications based on nxn components",
   "main": "index.js",
   "scripts": {
