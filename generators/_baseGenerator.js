@@ -19,6 +19,11 @@ class BaseGenerator
 
         if( section != "modules")
         {
+            if(await this.existsComponent(appId,"component",params.name))
+            {
+                return await this.addToComponent(name, obj,section,params,"component",params.name);
+            }
+    
             if(await this.existsComponent(appId,"module",appId))
             {
                 return await this.addToComponent(name, obj,section,params,"module",appId);
@@ -27,11 +32,6 @@ class BaseGenerator
             if(await this.existsComponent(appId,"component",appId))
             {
                 return await this.addToComponent(name, obj,section,params,"component",appId);
-            }
-    
-            if(await this.existsComponent(appId,"component",name))
-            {
-                return await this.addToComponent(name, obj,section,params,"component",name);
             }
     
             if(false &&  await this.createComponent(appId,appId,"module"))
@@ -331,7 +331,7 @@ class BaseGenerator
     
     async existsComponent(appId,type="component",compName=null) 
     {
-        return this.existsConfigPath(appId,"component",compName,"yml","config");
+        return this.existsConfigPath(appId,type,compName,"yml","config");
     }
 }
 
