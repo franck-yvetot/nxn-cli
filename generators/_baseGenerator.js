@@ -41,6 +41,7 @@ class BaseGenerator
         }
 
         this.configPath = params.toDir+'/client_data/default/config_default.yml';
+        console.log("Registers "+params.type+" "+name+" in config: "+ configPath);
 
         const yamlObj = await yamlEditor.load(this.configPath,true);
         
@@ -87,7 +88,7 @@ class BaseGenerator
         if(!compName)
             compName = appId;
 
-        console.log("Registers "+type+" in config: "+ configPath);
+        console.log("Registers "+params.type+" in config: "+ configPath);
 
         const yamlObj = await yamlEditor.load(configPath,true);        
         
