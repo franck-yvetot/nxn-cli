@@ -87,6 +87,8 @@ class BaseGenerator
         if(!compName)
             compName = appId;
 
+        console.log("Registers "+type+" in config: "+ configPath);
+
         const yamlObj = await yamlEditor.load(configPath,true);        
         
         // add object to section
