@@ -69,10 +69,14 @@ ${pad}where APPLICATION and NAME are the names of the application and type modul
         {
             console.error("this types file already exists");
         }
-        else {
-            try {
+        else 
+        {
+            try 
+            {
                 fs.writeFileAsync(fullPath,s,true);    
-            } catch (error) {
+            } 
+            catch (error) 
+            {
                 console.error(error);
             }    
         }

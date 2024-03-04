@@ -115,7 +115,6 @@ ${pad}The route can be configured if added to the "routes/configuration" section
         // replace class name
         s = s.replace(/MY_ROUTE/g,Basename);
 
-
         if(path.search('application')==-1)
             path = '/applications/'+path;
 
