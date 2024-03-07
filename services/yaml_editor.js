@@ -88,7 +88,7 @@ class YamlEditor
     saveString(yamlObj,onSave=null) 
     {
         // Convert the YAML object back to YAML string
-        let content = yaml.dump(yamlObj,{quotingType:'"'});        
+        let content = yaml.dump(yamlObj,{quotingType:'"',lineWidth:150});        
 
         let content2 = this.restoreComments(content);
         content2 = this.restoreEmptyLines(content2);
