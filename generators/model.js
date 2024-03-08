@@ -119,6 +119,7 @@ class ComponentGenerator extends BaseGenerator
         let fields = schema.fields;
         let fieldDecl = [];
         let fgetters = [];
+        let fieldId = schema.id || 'id';
 
         await locale.generate(params,fields,params.lang||"en");
         await dbGen.generate(params);       
@@ -151,20 +152,7 @@ class ComponentGenerator extends BaseGenerator
 
         for (let fname in fields)
         {
-            const field = fields[fname];
-
-            let ftype = "string";
-            if(field.type == "integer" || field.type == "float" || field.type == "number")
-                ftype = "number";
-
-            const CamelName = strings.toCamelCase(fname,true);
-
-            let desc = {
-                fname,
-                ftype,
-                description: field.description || field.title || field.label || fname,
-                CamelName
-            }
+            let desc = this.getFiledDesc(fname,fields);
 
             let decl2 = decl
                 .replace("FNAME",desc.fname)
@@ -182,6 +170,21 @@ class ComponentGenerator extends BaseGenerator
                 ;
 
             fgetters.push(getter2);
+        }
+
+        // make sure we have a setId() in model because used by crud.
+        if(!fields["id"] && fields[fieldId])
+        {
+            let desc = this.getFiledDesc(fieldId,fields,"id");
+
+            let getter2 = getter
+                .replace(/CLASS_NAME/g,clsName)
+                .replace(/UP_CAMEL_NAME/g,desc.CamelName)
+                .replace(/FNAME/g,desc.fname)
+                .replace(/FTYPE/g,desc.ftype)
+                .replace(/FDESCRIPTION/g,desc.description);
+
+            fgetters.push(getter2);            
         }
 
         let decls = fieldDecl.join("\n");
@@ -231,6 +234,27 @@ class ComponentGenerator extends BaseGenerator
                 locale: test1_locale  
             */          
     }
+
+    getFiledDesc(fname,fields,alias=null) 
+    {
+        const field = fields[fname];
+
+        let ftype = "string";
+
+        if(field.type == "integer" || field.type == "float" || field.type == "number")
+            ftype = "number";
+
+        const CamelName = strings.toCamelCase(alias||fname,true);
+
+        let desc = {
+            fname,
+            ftype,
+            description: field.description || field.title || field.label || fname,
+            CamelName
+        }
+
+        return desc;
+    }    
 }
 
 module.exports = new ComponentGenerator();
