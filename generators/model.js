@@ -198,6 +198,7 @@ class ComponentGenerator extends BaseGenerator
                 .replace(/OBJ_NAME/g,objName)            
                 .replace(/FIELDS/,decls)
                 .replace(/GETTERS_SETTERS/,getters)
+                .replace(/FIELD_ID/g,fieldId)                
                 ;
         }
         

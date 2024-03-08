@@ -10,10 +10,10 @@ FIELDS
      * Create a new CLASS_NAME object.
      * @param {number} id - The unique identifier for the OBJ_NAME.
      */
-    constructor(id) 
+    constructor(FIELD_ID)
     {
-        Object.assign(this,{id});
-        this.id = id;
+        Object.assign(this,{});
+        this.FIELD_ID = FIELD_ID;
     }
 
     /**
@@ -21,7 +21,7 @@ FIELDS
      * @returns {boolean} - True if the OBJ_NAME is valid; otherwise, false.
      */
     isOk() {
-        return this.id;
+        return !!this.getId();
     }
     
     // GETTERS and SETTERS
