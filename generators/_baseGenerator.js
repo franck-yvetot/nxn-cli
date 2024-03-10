@@ -19,16 +19,32 @@ class BaseGenerator
 
         if( section != "modules")
         {
-            if(await this.existsComponent(appId,"component",params.name))
+            if(params.type != "component")
             {
-                return await this.addToComponent(name, obj,section,params,"component",params.name);
+                // most objects to generate => search their parent component first, then module
+
+                if(await this.existsComponent(appId,"component",params.name))
+                {
+                    return await this.addToComponent(name, obj,section,params,"component",params.name);
+                }
+        
+                if(await this.existsComponent(appId,"module",appId))
+                {
+                    return await this.addToComponent(name, obj,section,params,"module",appId);
+                }    
             }
-    
-            if(await this.existsComponent(appId,"module",appId))
+            else
             {
-                return await this.addToComponent(name, obj,section,params,"module",appId);
+                // for a component => search their module as we usually add components in modules..
+                if(await this.existsComponent(appId,"module",appId))
+                {
+                    return await this.addToComponent(name, obj,section,params,"module",appId);
+                }    
+
             }
+
     
+            // in case we have a component isntead of a module, use it (unusal..)
             if(await this.existsComponent(appId,"component",appId))
             {
                 return await this.addToComponent(name, obj,section,params,"component",appId);
@@ -40,6 +56,7 @@ class BaseGenerator
             }
         }
 
+        // otherwise, add to main configuration
         this.configPath = params.toDir+'/client_data/default/config_default.yml';
         console.log("Registers "+params.type+" "+name+" in config: "+ this.configPath);
 
