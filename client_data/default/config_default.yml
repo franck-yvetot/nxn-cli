@@ -3,6 +3,8 @@ modules:
   configuration:
     generators_mod:
       upath: generators@generators
+    config_mod:
+      upath: config@config
 services:
   load: "*"
   configuration:
@@ -10,3 +12,4 @@ services:
       path: "@nxn/db/firestore.service"
       conPath: .firestore
       description: Firestore
+

@@ -252,7 +252,7 @@ class BaseGenerator
         if(path.search('application')==-1)
             path = '/applications/'+path;
 
-        if(path.search('/'+section)==-1)
+        if(path.search('/'+section)==-1 || appId == "config")
             path = path+'/'+section;
 
         let fullPath = path+'/'+name+'.'+type+'.'+ext;
