@@ -10,12 +10,12 @@ subgraph main
 
     subgraph Application
         direction LR;
-        classDef nodeCls fill:#C080C0,stroke:#eee,color:#fff
+        classDef nodeCls fill:#9C57BF,stroke:#eee,color:#fff
         classDef routeCls fill:#2080D0,stroke:#eee,color:#fff
-        classDef nodCls fill:#C080C0,stroke:#eee,color:#fff
+        classDef nodCls fill:#9C57BF,stroke:#eee,color:#fff
         classDef serviceCls fill:#A9C9EB,stroke:#eee,color:#444
         classDef dataCls fill:#73BF67,stroke:#eee,color:#fff        
-        classDef localeCls fill:#9C57BF,stroke:#eee,color:#fff        
+        classDef localeCls fill:#73BF67,stroke:#eee,color:#fff        
 `;
 
 const templateEnd = `end
@@ -45,12 +45,12 @@ const templateEndOnlyModules = `
 
 const templateDoc = `subgraph Modules
     direction LR;
-    classDef nodeCls fill:#C080C0,stroke:#eee,color:#fff
+    classDef nodeCls fill:#9C57BF,stroke:#eee,color:#fff
     classDef routeCls fill:#2080D0,stroke:#eee,color:#fff
-    classDef nodCls fill:#C080C0,stroke:#eee,color:#fff
+    classDef nodCls fill:#9C57BF,stroke:#eee,color:#fff
     classDef serviceCls fill:#A9C9EB,stroke:#eee,color:#444
     classDef dataCls fill:#73BF67,stroke:#eee,color:#fff
-    classDef localeCls fill:#9C57BF,stroke:#eee,color:#fff
+    classDef localeCls fill:#73BF67,stroke:#eee,color:#fff
 `;
 
 const templateDocEnd = `end
