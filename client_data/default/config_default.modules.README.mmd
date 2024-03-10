@@ -6,7 +6,8 @@ subgraph Modules
     classDef routeCls fill:#2080D0,stroke:#eee,color:#fff
     classDef nodCls fill:#C080C0,stroke:#eee,color:#fff
     classDef serviceCls fill:#A9C9EB,stroke:#eee,color:#444
-
+    classDef dataCls fill:#73BF67,stroke:#eee,color:#fff
+    classDef localeCls fill:#9C57BF,stroke:#eee,color:#fff
 
 subgraph generators
 direction TB;
@@ -30,11 +31,11 @@ direction LR;
 
 subgraph generators_services1
 direction TB;
-    mermaid_doc["<b>mermaid</b><br><br>mermaid@generators<br><br>"]:::serviceCls
+    mermaid_doc["<b>mermaid</b><br><br><i>mermaid@generators</i><br><br>"]:::serviceCls
 
-    modules_doc["<b>modules</b><br><br>modules@generators<br><br>"]:::serviceCls
+    model_doc["<b>model</b><br><br><i>model@generators</i><br><br>"]:::serviceCls
 
-    model_doc["<b>model</b><br><br>model@generators<br><br>"]:::serviceCls
+    generate_doc["<b>generate</b><br><br><i>generate@generators</i><br><br>"]:::serviceCls
 
 end
 style generators_services1 fill:#fff,stroke:#fff,color:#fff
@@ -42,7 +43,7 @@ style generators_services1 fill:#fff,stroke:#fff,color:#fff
 
 subgraph generators_services2
 direction TB;
-    generate_doc["<b>generate</b><br><br>generate@generators<br><br>"]:::serviceCls
+    module_doc["<b>module</b><br><br><i>module@generators</i><br><br>"]:::serviceCls
 
 end
 style generators_services2 fill:#fff,stroke:#fff,color:#fff
@@ -63,7 +64,11 @@ direction LR;
 
 subgraph nxn/db_services1
 direction TB;
-    db_doc["<b>db</b><br><br>@nxn/db/firestore.service<br><br><i>Firestore</i>"]:::serviceCls
+    db_doc["<b>db</b><br><br><i>@nxn/db/firestore.service</i><br><br>Firestore"]:::dataCls
+
+    config_locale_doc>"config_locale"]:::localeCls
+
+    config_model_doc[("config_model")]:::dataCls
 
 end
 style nxn/db_services1 fill:#fff,stroke:#fff,color:#fff
@@ -73,6 +78,27 @@ style nxn/db:services fill:#f0f0f0,stroke:#eee,color:#444
 
 end
 style nxn/db fill:#f0f0f0,stroke:#eee,color:#444
+
+
+
+subgraph config
+direction TB;
+
+subgraph config:services["Services"]
+direction LR;
+
+subgraph config_services1
+direction TB;
+    config_doc["<b>config</b><br><br><i>config@config</i><br><br>"]:::serviceCls
+
+end
+style config_services1 fill:#fff,stroke:#fff,color:#fff
+
+end
+style config:services fill:#f0f0f0,stroke:#eee,color:#444
+
+end
+style config fill:#f0f0f0,stroke:#eee,color:#444
 end
 style Modules fill:#fff,stroke:#999,color:#222
 

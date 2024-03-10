@@ -14,13 +14,18 @@ subgraph main
         classDef routeCls fill:#2080D0,stroke:#eee,color:#fff
         classDef nodCls fill:#C080C0,stroke:#eee,color:#fff
         classDef serviceCls fill:#A9C9EB,stroke:#eee,color:#444
+        classDef dataCls fill:#73BF67,stroke:#eee,color:#fff        
+        classDef localeCls fill:#9C57BF,stroke:#eee,color:#fff        
 `;
+
 const templateEnd = `end
 
     subgraph Legend
         Route:::routeCls
         Service:::serviceCls
         Node:::nodCls
+        Data:::dataCls
+        Locale:::localeCls
     end
 
 end
@@ -44,8 +49,10 @@ const templateDoc = `subgraph Modules
     classDef routeCls fill:#2080D0,stroke:#eee,color:#fff
     classDef nodCls fill:#C080C0,stroke:#eee,color:#fff
     classDef serviceCls fill:#A9C9EB,stroke:#eee,color:#444
-
+    classDef dataCls fill:#73BF67,stroke:#eee,color:#fff
+    classDef localeCls fill:#9C57BF,stroke:#eee,color:#fff
 `;
+
 const templateDocEnd = `end
 style Modules fill:#fff,stroke:#999,color:#222
 
@@ -317,16 +324,15 @@ flows option generates a dependency diagram and modules a list of items in the a
         // path based
         if (desc.path) 
         {
-            if (desc.path.startsWith("@nxn/db")) {
-                return "nxn/db";
-            }
             if (desc.path.startsWith("@nxn/files")) {
                 return "nxn/files";
             }
             if (desc.path.startsWith("@nxn/boot")) {
                 return "nxn/boot";
             }
-    
+            if (desc.path.startsWith("@nxn/boot")) {
+                return "nxn/boot";
+            }
             let pathParts = desc.path.split("/");
             pathParts.pop(); // Remove the last part (presumably the filename)
             return pathParts.join("/"); // Join the rest of the path
@@ -395,6 +401,9 @@ flows option generates a dependency diagram and modules a list of items in the a
         let name = id;
         let cls2 = (cls||"")+"Cls";
 
+        const dataCls = "dataCls";
+        const localeCls = "localeCls";
+
         if(cls == "route")
             return "    "+name+"(\""+name+"\"):::"+cls2+"\n";
 
@@ -403,13 +412,16 @@ flows option generates a dependency diagram and modules a list of items in the a
             let path = desc.upath || desc.path;
 
             if(path == "@nxn/db/db_model.service")
-                return "    "+name+"[/\""+name+"\"/]:::"+cls2+"\n";
+                return "    "+name+"[/\""+name+"\"/]:::"+dataCls+"\n";
+
+            if(path == "@nxn/db/locale.service")
+                return "    "+name+">\""+name+"\"]:::"+localeCls+"\n";
 
             if(path == "@nxn/db/mysql.service")
-                return "    "+name+"[(\""+name+"\")]:::"+cls2+"\n";
+                return "    "+name+"[(\""+name+"\")]:::"+dataCls+"\n";
 
             if(path == "firestore@googleapi" || path == "@nxn/db/firestore.service")
-                return "    "+name+"[(\""+name+"\")]:::"+cls2+"\n";
+                return "    "+name+"[(\""+name+"\")]:::"+dataCls+"\n";
 
         }
 
@@ -474,41 +486,70 @@ flows option generates a dependency diagram and modules a list of items in the a
         // header item in doc
         let nameDoc = id;
         desc = desc || {};
-        cls = (cls||"")+"Cls";
 
         if(cls)
         {
             nameDoc +="_doc";        
 
             let path = desc.upath || desc.path;
-            if(cls=="routeCls")
+            if(cls=="route")
             {
-                sdoc+="    "+nameDoc+"(\"<b>"+id+"</b><br><br>";
+                let content="<b>"+id+"</b><br><br>";
                 if(path)
-                    sdoc+="<i>"+path+"</i><br><br>";
+                    content+="<i>"+path+"</i><br><br>";
                 
                 if(desc.description)
-                    sdoc+=desc.description;
-
-                sdoc+="\")";                
+                  content+=desc.description;
+                
+                sdoc = this.getDocItem(id,nameDoc,desc,content,cls);
             }
             else
             {
-                sdoc+="    "+nameDoc+"[\"<b>"+id+"</b><br><br>";
+                let content="<b>"+id+"</b><br><br>";
                 if(path)
-                    sdoc+=path+"<br><br>";
+                    content+="<i>"+path+"</i><br><br>";
                 
                 if(desc.description)
-                    sdoc+="<i>"+desc.description+"</i>";
-
-                sdoc+="\"]";
+                    content+=desc.description;
+                
+                sdoc = this.getDocItem(id,nameDoc,desc,content,cls);
             }
-
-            sdoc+=":::"+cls+"\n";
         }
 
         return sdoc;
     }
+
+    getDocItem(id,nameDoc,desc,content,cls=null) 
+    {
+        let name = id;
+        let cls2 = (cls||"")+"Cls";
+
+        const dataCls = "dataCls";
+        const localeCls = "localeCls";
+
+        if(cls == "route")
+            return "    "+nameDoc+"(\""+content+"\")"+":::"+cls2+"\n";
+
+        if(cls == "service")
+        {
+            let path = desc.upath || desc.path;
+
+            if(path == "@nxn/db/db_model.service")
+                return "    "+nameDoc+"[(\""+name+"\")]:::"+dataCls+"\n";
+
+            if(path == "@nxn/db/locale.service")
+                return "    "+nameDoc+">\""+name+"\"]:::"+localeCls+"\n";
+
+            if(path == "@nxn/db/mysql.service")
+                return "    "+nameDoc+"[(\""+content+"\")]"+":::"+dataCls+"\n";
+
+            if(path == "firestore@googleapi" || path == "@nxn/db/firestore.service")
+                return "    "+nameDoc+"[\""+content+"\"]"+":::"+dataCls+"\n";
+
+        }
+
+        return "    "+nameDoc+"[\""+content+"\"]"+":::"+cls2+"\n";
+    }    
 
     /**
      * generate doc for all nodes
@@ -693,6 +734,7 @@ flows option generates a dependency diagram and modules a list of items in the a
         graphLabel = null
         )
     {
+        graphId = graphId.replace("@","");
         let graphName = graphId;
         if(graphLabel)
             graphName +="[\""+graphLabel+"\"]";
