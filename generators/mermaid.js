@@ -535,7 +535,7 @@ flows option generates a dependency diagram and modules a list of items in the a
             let path = desc.upath || desc.path;
 
             if(path == "@nxn/db/db_model.service")
-                return "    "+nameDoc+"[(\""+name+"\")]:::"+dataCls+"\n";
+                return "    "+nameDoc+"[/\""+name+"\"/]:::"+dataCls+"\n";
 
             if(path == "@nxn/db/locale.service")
                 return "    "+nameDoc+">\""+name+"\"]:::"+localeCls+"\n";
