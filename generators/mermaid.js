@@ -403,7 +403,7 @@ flows option generates a dependency diagram and modules a list of items in the a
             let path = desc.upath || desc.path;
 
             if(path == "@nxn/db/db_model.service")
-                return "    "+name+"(/\""+name+"\"/):::"+cls2+"\n";
+                return "    "+name+"[/\""+name+"\"/]:::"+cls2+"\n";
 
             if(path == "@nxn/db/mysql.service")
                 return "    "+name+"[(\""+name+"\")]:::"+cls2+"\n";

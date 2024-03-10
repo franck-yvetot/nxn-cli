@@ -11,13 +11,17 @@ subgraph main
     generate_route("generate_route"):::routeCls
     generate_route -- service -->generate;
     db[("db")]:::serviceCls
-    config["config"]:::serviceCls
     mermaid["mermaid"]:::serviceCls
     model["model"]:::serviceCls
     generate["generate"]:::serviceCls
     generate -- model -->model;
     generate -- module -->module;
     module["module"]:::serviceCls
+    config_locale["config_locale"]:::serviceCls
+    config_model(/"config_model"/):::serviceCls
+    config_model --> db;
+    config_model -- locale -->config_locale;
+    config["config"]:::serviceCls
 end
 
     subgraph Legend
