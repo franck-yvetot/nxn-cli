@@ -1,92 +1,12 @@
-# add variables here to be used in config as "${VAR}"
-$variables:
-  PORT: ${{PORT||3000}}
 modules:
   load: "*"
   configuration:
-    app1_mod:
-      upath: app1@app1
-# ---------------------
-# 
-# services components
-# 
-# ---------------------
+    generators_mod:
+      upath: generators@generators
 services:
-  load: all
+  load: "*"
   configuration:
-    test1:
-      upath: test1@app1
-    test1_locale:
-      upath: locale@nxn/db
-      default: en
-    firestore:
-      upath: firestore@googleapi
+    db:
+      path: "@nxn/db/firestore.service"
       conPath: .firestore
-    mysql:
-      path: "@nxn/db/mysql.service"
-    test4:
-      upath: test4@app1
-    test5_locale:
-      path: "@nxn/db/locale.service"
-      default: en
-      langs:
-        en: $ref(applications/app1/locales/en_test5.strings)
-    test5_model:
-      path: "@nxn/db/db_model.service"
-      injections:
-        db: db
-        locale: test5_locale
-    test5:
-      upath: test5@app1
-# ---------------------
-# 
-# express routers
-# 
-# ---------------------
-routes:
-  # route default path
-  load: "*"
-  configuration:
-    test1_route:
-      upath: test1@app1
-      url: /app1/test1
-    test5_route:
-      upath: test5@app1
-      url: /app1/test5
-# ---------------------
-# 
-# to be loaded at startup
-# 
-# ---------------------
-run:
-  load: express
-# ---------------------
-# 
-# Tests
-# (launched if env TEST=true)
-# 
-# ---------------------
-tests:
-  load: express
-  configuration:
-
-# express middleware section
-middleware:
-  defaultPath: "@nxn/boot/middleware/$id"
-  load: ENV,debug,express,CORS2,JSON
-  configuration:
-    express:
-      port: ${PORT}
-      message: Express server run on port
-    cors2:
-      verbs: GET,POST,PUT,DELETE
-    env: {}
-    debug:
-      path: "@nxn/debug"
-      DEBUG: "*"
-      DEBUG_COLORS: 1
-nodes:
-  load: "*"
-  configuration:
-    test1_node:
-      upath: test1@app23
+      description: Firestore

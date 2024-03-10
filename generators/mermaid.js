@@ -60,9 +60,10 @@ class Generator extends BaseGenerator
 
     usage(pad=' ') {
         return {
-            usage:"(config file name)",
+            usage:"(config file name) flows? modules?",
             description:
 pad+`generates a diagram of components of the application in mermaid form.
+flows option generates a dependency diagram and modules a list of items in the application.
 `
         };
     }
@@ -346,17 +347,7 @@ pad+`generates a diagram of components of the application in mermaid form.
     getMermaidItem(id,desc,cls=null) 
     {
         // header item in flow
-        let s = "";
-
-        cls = (cls||"")+"Cls";
-        let name = id;
-        if(cls == "routeCls")
-            s+="    "+name+"(\""+name+"\")";
-        else
-            s+="    "+name+"[\""+name+"\"]";
-
-        if(cls)
-            s +=":::"+cls+"\n";        
+        let s = this.getFlowItemHeader(id,desc,cls);
 
         let injections = this.getInjections(desc) 
         for(let i=0;i<injections.length;i++)
@@ -397,6 +388,32 @@ pad+`generates a diagram of components of the application in mermaid form.
         }
         */
         return s;
+    }
+
+    getFlowItemHeader(id,desc,cls=null) 
+    {
+        let name = id;
+        let cls2 = (cls||"")+"Cls";
+
+        if(cls == "route")
+            return "    "+name+"(\""+name+"\"):::"+cls2+"\n";
+
+        if(cls == "service")
+        {
+            let path = desc.upath || desc.path;
+
+            if(path == "@nxn/db/db_model.service")
+                return "    "+name+"(/\""+name+"\"/):::"+cls2+"\n";
+
+            if(path == "@nxn/db/mysql.service")
+                return "    "+name+"[(\""+name+"\")]:::"+cls2+"\n";
+
+            if(path == "firestore@googleapi" || path == "@nxn/db/firestore.service")
+                return "    "+name+"[(\""+name+"\")]:::"+cls2+"\n";
+
+        }
+
+        return "    "+name+"[\""+name+"\"]:::"+cls2+"\n";
     }
 
     /**

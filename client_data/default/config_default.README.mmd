@@ -8,24 +8,12 @@ subgraph main
         classDef routeCls fill:#2080D0,stroke:#eee,color:#fff
         classDef nodCls fill:#C080C0,stroke:#eee,color:#fff
         classDef serviceCls fill:#A9C9EB,stroke:#eee,color:#444
-    test1_route("test1_route"):::routeCls
-    test5_route("test5_route"):::routeCls
-    test1["test1"]:::serviceCls
-    test1_locale["test1_locale"]:::serviceCls
-    firestore["firestore"]:::serviceCls
-    mysql["mysql"]:::serviceCls
-    test4["test4"]:::serviceCls
-    test5_locale["test5_locale"]:::serviceCls
-    test5_model["test5_model"]:::serviceCls
-    test5_model --> db;
-    test5_model -- locale -->test5_locale;
-    test5["test5"]:::serviceCls
-    test22_locale["test22_locale"]:::serviceCls
-    test22_model["test22_model"]:::serviceCls
-    test22_model --> db;
-    test22_model -- locale -->test22_locale;
-    test1_node["test1_node"]:::nodeCls
-    test4_node["test4_node"]:::nodeCls
+    generate_route("generate_route"):::routeCls
+    db[("db")]:::serviceCls
+    mermaid["mermaid"]:::serviceCls
+    modules["modules"]:::serviceCls
+    model["model"]:::serviceCls
+    generate_node["generate_node"]:::nodeCls
 end
 
     subgraph Legend

@@ -112,6 +112,8 @@ class ComponentGenerator extends BaseGenerator
                     params.db_type = db.type;
                 }
             }
+
+            params.name = params.args[1];
         }
 
         return params;
@@ -147,6 +149,7 @@ class ComponentGenerator extends BaseGenerator
             {
                 path: "@nxn/db/mysql.service",
                 conPath: ".mysql",
+                description:"MySql",
                 log: true
             }
         }
@@ -154,12 +157,13 @@ class ComponentGenerator extends BaseGenerator
         {
             desc = 
             {
-                upath: "firestore@googleapi",
-                conPath: ".firestore"
+                path: "@nxn/db/firestore.service",
+                conPath: ".firestore",
+                description:"Firestore"
             }
         }
 
-        await this.addToConfig(params.db, desc,"services",params);        
+        await this.addToConfig(params.name, desc,"services",params);        
     }
 }
 
