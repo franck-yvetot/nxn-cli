@@ -544,7 +544,7 @@ flows option generates a dependency diagram and modules a list of items in the a
                 return "    "+nameDoc+"[(\""+content+"\")]"+":::"+dataCls+"\n";
 
             if(path == "firestore@googleapi" || path == "@nxn/db/firestore.service")
-                return "    "+nameDoc+"[\""+content+"\"]"+":::"+dataCls+"\n";
+                return "    "+nameDoc+"[(\""+content+"\")]"+":::"+dataCls+"\n";
 
         }
 
