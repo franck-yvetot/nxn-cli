@@ -9,6 +9,12 @@ const FlowNode = require("@nxn/boot/node");
 
 class MY_ROUTERoute extends FlowNode
 {
+
+    /** service controller
+     *  @type {import('../services/MY_SCE_BASE.service').MY_SCESce} 
+     **/
+    MY_SCE_BASESce;
+
     constructor() {
         super();
     }
@@ -24,8 +30,7 @@ class MY_ROUTERoute extends FlowNode
         // AUTH
         // if not authenticated, remove this injection (here and in isOk() )
         this.auth =  this.getInjection('auth') || 
-            { authenticate:(req,res,next)=>{ return (req,res,next) => { next(); }} }
-
+            { authenticate:(req,res,next)=>{ return (req,res,next) => { next(); }} }        
 
         // init routes
         const router = express.Router();
@@ -47,7 +52,8 @@ class MY_ROUTERoute extends FlowNode
         // endpoint w/ auth
         router.get('/', auth.authenticate(), async (req, res)=> {
 
-            try {
+            try 
+            {
                 
                 res.send("OK");    
             }
@@ -111,9 +117,11 @@ ${pad}The route can be configured if added to the "routes/configuration" section
 
         // replace path name
         s = s.replace(/MY_ROUTE_BASE/g,basename);
+        s = s.replace(/MY_SCE_BASE/g,basename);
 
         // replace class name
         s = s.replace(/MY_ROUTE/g,Basename);
+        s = s.replace(/MY_SCE/g,Basename);
 
         if(path.search('application')==-1)
             path = '/applications/'+path;
@@ -142,8 +150,12 @@ ${pad}The route can be configured if added to the "routes/configuration" section
         let upath = basename+"@"+app;
         let sce = {
             upath,
-            url:"/"+app+"/"+basename
+            url:"/"+app+"/"+basename,
+            injections: {
+            }
         }
+        sce.injections[basename+"Sce"] = basename;
+
         await this.addToConfig(basename+"_route", sce,"routes",params);
 
         console.log("Generated route "+fullPath);

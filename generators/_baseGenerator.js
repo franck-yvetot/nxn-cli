@@ -23,7 +23,7 @@ class BaseGenerator
             {
                 // most objects to generate => search their parent component first, then module
 
-                if(await this.existsComponent(name,"component",params.name))
+                if(await this.existsComponent(appId,"component",params.name))
                 {
                     return await this.addToComponent(name, obj,section,params,"component",params.name);
                 }
@@ -104,7 +104,7 @@ class BaseGenerator
     {
         // this.configPath = params.toDir+'/client_data/default/config_default.yml';
         let appId = params.appId;
-        let configPath = this.getComponentPath(appId,type);
+        let configPath = this.getComponentPath(appId,type,compName);
         if(!compName)
             compName = appId;
 
