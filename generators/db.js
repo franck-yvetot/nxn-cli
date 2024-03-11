@@ -91,12 +91,12 @@ class ComponentGenerator extends BaseGenerator
 
     getExtraParams(params) 
     {
-        if(params.args.length > 2)
+        if(params.args.length > 1)
         {
 
             let db;
 
-            for(let i= 2;i<params.args.length;i++) 
+            for(let i= 1;i<params.args.length;i++) 
             {
                 let arg = params.args[i];
     
@@ -113,7 +113,10 @@ class ComponentGenerator extends BaseGenerator
                 }
             }
 
-            params.name = params.args[1];
+            if(params.args.length>2)
+                params.name = params.args[1];
+            else
+                params.name = "db";
         }
 
         return params;
@@ -153,7 +156,7 @@ class ComponentGenerator extends BaseGenerator
                 log: true
             }
         }
-        //else if(params.db_type == "firestore")
+        else //if(params.db_type == "firestore")
         {
             desc = 
             {
