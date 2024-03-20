@@ -27,15 +27,16 @@ pad+`Create empty project.`
                 params.srcDir+"/generators/templates/default/", 
                 params.toDir,
                 params.force);
+            console.log("Generated empty project in "+params.toDir);
 
-            fs.createDirAsync(params.toDir+"/applications")
+            await fs.createDirAsync(params.toDir+"/applications");
+            console.log("Added "+params.toDir+"/applications");
         } 
         catch (error) 
         {
             console.error(error);
         }
 
-        console.log("Generated empty project in "+params.toDir);
         return true;
     }
 }
