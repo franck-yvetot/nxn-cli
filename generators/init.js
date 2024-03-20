@@ -27,6 +27,8 @@ pad+`Create empty project.`
                 params.srcDir+"/generators/templates/default/", 
                 params.toDir,
                 params.force);
+
+            fs.createDirAsync(params.toDir+"/applications")
         } 
         catch (error) 
         {
