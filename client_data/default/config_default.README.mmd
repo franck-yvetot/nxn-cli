@@ -11,11 +11,12 @@ subgraph main
         classDef dataCls fill:#73BF67,stroke:#eee,color:#fff        
         classDef localeCls fill:#73BF67,stroke:#eee,color:#fff        
     generate_route("generate_route"):::routeCls
-    generate_route -- service -->generate;
+    generate_route -- generateSce -->generate;
     db[("db")]:::dataCls
     mermaid["mermaid"]:::serviceCls
     model["model"]:::serviceCls
     generate["generate"]:::serviceCls
+    generate -- mermaid -->mermaid;
     generate -- model -->model;
     generate -- module -->module;
     module["module"]:::serviceCls
