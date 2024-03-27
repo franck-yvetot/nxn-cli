@@ -78,27 +78,6 @@ style nxn/db:services fill:#f0f0f0,stroke:#eee,color:#444
 
 end
 style nxn/db fill:#f0f0f0,stroke:#eee,color:#444
-
-
-
-subgraph config
-direction TB;
-
-subgraph config:services["Services"]
-direction LR;
-
-subgraph config_services1
-direction TB;
-    config_doc["<b>config</b><br><br><i>config@config</i><br><br>"]:::serviceCls
-
-end
-style config_services1 fill:#fff,stroke:#fff,color:#fff
-
-end
-style config:services fill:#f0f0f0,stroke:#eee,color:#444
-
-end
-style config fill:#f0f0f0,stroke:#eee,color:#444
 end
 style Modules fill:#fff,stroke:#999,color:#222
 

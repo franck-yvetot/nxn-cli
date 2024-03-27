@@ -483,21 +483,28 @@ flows option generates a dependency diagram and modules a list of items in the a
 
     isNodeShown(nodeId,showOnly,allNodes) 
     {
-        // not show filtering
-        if(!showOnly)
-            return true;
-
-        // is show selected ?
         if(allNodes[nodeId])
         {
             const desc = allNodes[nodeId];
+
+            // active ?
+            if(desc.active === false)
+                return false;
+
+            // not filtering? ==> ok
+            if(!showOnly)
+                return true;
+            
+            // selected ?
             if( desc.show  // node has a show attribute
                 && !showOnly[desc.show] // show is selected
             )
                 return false;
+            
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
