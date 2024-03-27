@@ -103,6 +103,7 @@ flows option generates a dependency diagram and modules a list of items in the a
         // display flows and modules?
         let withFlow = false;
         let withModules = false;
+        let showOnly = null;
         let args2 = [];
         for(let arg of args)
         {
@@ -112,27 +113,24 @@ flows option generates a dependency diagram and modules a list of items in the a
                 withModules = true;
             else if(arg.search(/flows?/i)!=-1)
                 withFlow = true;
+            else if(arg.search(/show?/i)!=-1)
+            {
+                let show = arg.split("=");
+                if (show?.length==2)
+                {
+                    showOnly = {}
+                    let showvals = show[1].split(",");
+                    showvals.forEach(v => {
+                        showOnly[v] = true; // Populate showOnly object
+                    });
+                }
+            }
             else 
                 args2.push(arg);
         }
 
         if(!withFlow && !withModules)
             withFlow = true;
-
-        /*
-        let configPath = name ? name : "config_default.yml";
-
-        if(configPath.search("config_")== -1)
-            configPath = "config_"+configPath;
-        
-        if(configPath.search("client_data")== -1)
-            configPath = "/client_data/default/"+configPath;
-        
-        if(!configPath.endsWith(".yml"))
-            configPath += ".yml";
-
-        this.configPath = params.toDir+configPath;
-        */
 
         params.args = args2;
         let {configName,configPath} = this.getPaths(params);
@@ -159,7 +157,7 @@ flows option generates a dependency diagram and modules a list of items in the a
                 // add to global flow
                 s += this.processItem(id,yamlObj.routes.configuration[id],
                     'route','routes',
-                    docs,docPackages);
+                    docs,docPackages,showOnly);
             }
         }
 
@@ -169,7 +167,7 @@ flows option generates a dependency diagram and modules a list of items in the a
             {
                 s += this.processItem(id,yamlObj.services.configuration[id],
                     'service','services',
-                    docs,docPackages);
+                    docs,docPackages,showOnly);
             }
         }
 
@@ -179,7 +177,7 @@ flows option generates a dependency diagram and modules a list of items in the a
             {
                 s += this.processItem(id,yamlObj.nodes.configuration[id],
                     'node','nodes',
-                    docs,docPackages);
+                    docs,docPackages,showOnly);
             }
         }
 
@@ -270,8 +268,12 @@ flows option generates a dependency diagram and modules a list of items in the a
         console.log("Generated mermaid file "+fullPath);
     }
 
-    processItem(id,desc,type,section,docs,docPackages)
+    processItem(id,desc,type,section,docs,docPackages,showOnly=null)
     {
+        // filters nodes that requires to be shown by category (ex. log)
+        if(desc.show && (!showOnly || !showOnly[desc.show]))
+             return '';
+
         // add to global flow
         let s = this.getMermaidItem(id,desc,type);
 
