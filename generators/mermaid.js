@@ -143,6 +143,8 @@ flows option generates a dependency diagram and modules a list of items in the a
         // const yamlObj1 = configSce.loadConfig(configName,configPath,process.env);
         let yamlObj = await bootSce.loadConfig(configName,configPath,process.env);
 
+        let allNodes = bootSce.getFullConfigurationNodes();
+
         // global doc of all items
         let docs = [];
 
@@ -157,7 +159,7 @@ flows option generates a dependency diagram and modules a list of items in the a
                 // add to global flow
                 s += this.processItem(id,yamlObj.routes.configuration[id],
                     'route','routes',
-                    docs,docPackages,showOnly);
+                    docs,docPackages,showOnly,allNodes);
             }
         }
 
@@ -167,7 +169,7 @@ flows option generates a dependency diagram and modules a list of items in the a
             {
                 s += this.processItem(id,yamlObj.services.configuration[id],
                     'service','services',
-                    docs,docPackages,showOnly);
+                    docs,docPackages,showOnly,allNodes);
             }
         }
 
@@ -177,7 +179,7 @@ flows option generates a dependency diagram and modules a list of items in the a
             {
                 s += this.processItem(id,yamlObj.nodes.configuration[id],
                     'node','nodes',
-                    docs,docPackages,showOnly);
+                    docs,docPackages,showOnly,allNodes);
             }
         }
 
@@ -268,14 +270,14 @@ flows option generates a dependency diagram and modules a list of items in the a
         console.log("Generated mermaid file "+fullPath);
     }
 
-    processItem(id,desc,type,section,docs,docPackages,showOnly=null)
+    processItem(id,desc,type,section,docs,docPackages,showOnly,allNodes)
     {
         // filters nodes that requires to be shown by category (ex. log)
-        if(desc.show && (!showOnly || !showOnly[desc.show]))
-             return '';
+        if(!this.isNodeShown(id,showOnly,allNodes))
+            return '';
 
         // add to global flow
-        let s = this.getMermaidItem(id,desc,type);
+        let s = this.getMermaidItem(id,desc,type,showOnly,allNodes);
 
         // get node documentation (mermaid node)
         let doc = this.getDocItemNode(id,desc,type);
@@ -352,12 +354,12 @@ flows option generates a dependency diagram and modules a list of items in the a
      * @param {*} cls 
      * @returns {string}
      */
-    getMermaidItem(id,desc,cls=null) 
+    getMermaidItem(id,desc,cls=null,showOnly,allNodes) 
     {
         // header item in flow
         let s = this.getFlowItemHeader(id,desc,cls);
 
-        let injections = this.getInjections(desc) 
+        let injections = this.getInjections(desc,showOnly,allNodes) 
         for(let i=0;i<injections.length;i++)
         {
             let injection = injections[i];
@@ -435,7 +437,7 @@ flows option generates a dependency diagram and modules a list of items in the a
      * 
      * @param {*} desc node desc 
      */
-    getInjections(desc) 
+    getInjections(desc,showOnly,allNodes) 
     {
         let injs = [];
 
@@ -450,16 +452,24 @@ flows option generates a dependency diagram and modules a list of items in the a
                 let aDep = deps.split(",");
                 for(let dep of aDep)
                 {
-                    if(dep != inj)
-                        injs.push({link:inj,to:dep});
-                    else
-                        injs.push({link:null,to:dep});
+                    if(this.isNodeShown(dep,showOnly,allNodes))
+                    {
+                        if(dep != inj)
+                            injs.push({link:inj,to:dep});
+                        else
+                            injs.push({link:null,to:dep});
+                    }
                 }
             }
             else if(typeof deps == "object")
             {
-                for(let k in deps) {
-                    injs.push({link:k,to:deps[k]});
+                for(let k in deps) 
+                {
+                    const dep = deps[k];
+                    if(this.isNodeShown(dep,showOnly,allNodes))
+                    {
+                        injs.push({link:k,to:dep});
+                    }
                 }
             }
             else                 
@@ -469,6 +479,25 @@ flows option generates a dependency diagram and modules a list of items in the a
         }
 
         return injs;
+    }
+
+    isNodeShown(nodeId,showOnly,allNodes) 
+    {
+        // not show filtering
+        if(!showOnly)
+            return true;
+
+        // is show selected ?
+        if(allNodes[nodeId])
+        {
+            const desc = allNodes[nodeId];
+            if( desc.show  // node has a show attribute
+                && !showOnly[desc.show] // show is selected
+            )
+                return false;
+        }
+
+        return true;
     }
 
     /**

@@ -25,7 +25,6 @@ subgraph main
     config_model --> db;
     config_model -- locale -->config_locale;
     config["config"]:::serviceCls
-    logger_node["logger_node"]:::nodeCls
 end
 
     subgraph Legend
