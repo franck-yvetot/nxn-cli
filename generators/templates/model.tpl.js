@@ -76,6 +76,7 @@ FIELDS
 }
   
 module.exports = CLASS_NAME;
+module.exports.CLASS_NAME = CLASS_NAME;
   `;
 
 module.exports = template;

@@ -75,23 +75,61 @@ flows option generates a dependency diagram and modules a list of items in the a
         };
     }
 
+    /**
+     * get configuration path in the form of:
+     *  client configName env
+     * @param {{force,path,args}} params 
+     * @returns {{configName,configPath}}
+     */
     getPaths(params)
     {
-        let {force,path,args} = params;
+        let {force,path,args,srcDir} = params;
         const myArgs = args;
-        let dirname = params.toDir
+        let dirname = params.toDir;
 
-        let client = myArgs[0] || 'default';
+        let arg0 = myArgs[0] || "";
+        let moduleUpath = arg0.split("@");
+        if(moduleUpath.length == 2)
+        {
+            const configPath = [srcDir+"/applications/"+moduleUpath[1]+"/config/"];
+
+            // set documentation path
+            params.docPath = srcDir+"/applications/"+moduleUpath[1]+"/documentation";
+
+            let configName;
+            if(moduleUpath[1]==moduleUpath[0])                
+                configName = moduleUpath[0]+".module";
+            else 
+                return {
+                    configName:moduleUpath[0]+".component",
+                    configPath
+                };
+
+            return {
+                configName,
+                configPath,
+                documentationPath:srcDir+"/applications/"+moduleUpath[1]+"/documentation/"+configName
+            };
+        }
+
+        let client = arg0 || 'default';
         global.__clientDir = `${dirname}/client_data/${client}/`;
 
         let configName = myArgs[1] || "default";
 
         // ENV
         const env = myArgs[2] || process.env.NODE_ENV || 'dev';
-
         const configPath = [global.__clientDir+'/env/'+env,__clientDir,dirname];
 
-        return {configName,configPath};
+        // CONFIG NAME : conf_<config name>.yml files to "run"
+        if(configName.search(/config_/)==-1)
+            configName = 'config_'+configName;
+
+        return {
+            configName,
+            configPath,
+            documentationPath: __clientDir+"/"+configName
+        };
     }
 
     async generate(params) 
@@ -133,17 +171,13 @@ flows option generates a dependency diagram and modules a list of items in the a
             withFlow = true;
 
         params.args = args2;
-        let {configName,configPath} = this.getPaths(params);
-
-        // CONFIG NAME : conf_<config name>.yml files to "run"
-        if(configName.search(/config_/)==-1)
-            configName = 'config_'+configName;
+        let {configName,configPath,documentationPath} = this.getPaths(params);
         
         // const yamlObj1 = await yamlEditor.load(this.configPath,false);
         // const yamlObj1 = configSce.loadConfig(configName,configPath,process.env);
-        let yamlObj = await bootSce.loadConfig(configName,configPath,process.env);
+        let yamlObj = await bootSce.loadConfig(configName,configPath,process.env,false);
 
-        let allNodes = bootSce.getFullConfigurationNodes();
+        let allNodes = bootSce.getFullConfigurationNodes(false);
 
         // global doc of all items
         let docs = [];
@@ -152,32 +186,35 @@ flows option generates a dependency diagram and modules a list of items in the a
         let docPackages = {}
         // let yamlObj = this.loadComponents(yamlObj1,yamlObj1);
 
-        if(yamlObj.routes?.configuration)
+        let section = yamlObj.routes && yamlObj.routes.configuration || yamlObj.routes;
+        if(section)
         {
-            for(let id in yamlObj.routes.configuration) 
+            for(let id in section) 
             {
                 // add to global flow
-                s += this.processItem(id,yamlObj.routes.configuration[id],
+                s += this.processItem(id,section[id],
                     'route','routes',
                     docs,docPackages,showOnly,allNodes);
             }
         }
 
-        if(yamlObj.services?.configuration)
+        section = yamlObj.services && yamlObj.services.configuration || yamlObj.services;
+        if(section)
         {
-            for(let id in yamlObj.services.configuration) 
+            for(let id in section) 
             {
-                s += this.processItem(id,yamlObj.services.configuration[id],
+                s += this.processItem(id,section[id],
                     'service','services',
                     docs,docPackages,showOnly,allNodes);
             }
         }
 
-        if(yamlObj.nodes?.configuration)
+        section = yamlObj.nodes && yamlObj.nodes.configuration || yamlObj.nodes;
+        if(section)
         {
-            for(let id in yamlObj.nodes.configuration) 
+            for(let id in section) 
             {
-                s += this.processItem(id,yamlObj.nodes.configuration[id],
+                s += this.processItem(id,section[id],
                     'node','nodes',
                     docs,docPackages,showOnly,allNodes);
             }
@@ -189,7 +226,7 @@ flows option generates a dependency diagram and modules a list of items in the a
         if(withFlow)
         {
             s = s.replace("DOCUMENTATION_GRAPH","");
-            this.saveDoc(s,true,false,params.toDir+'/client_data/default/'); 
+            this.saveDoc(s,true,false,documentationPath); 
         }
         
         if(withModules)
@@ -197,7 +234,7 @@ flows option generates a dependency diagram and modules a list of items in the a
             s = templateOnlyModules;
             s += this.getPackagesGraph(docPackages);
             s+= templateEndOnlyModules;
-            this.saveDoc(s,false,true,params.toDir+'/client_data/default/'); 
+            this.saveDoc(s,false,true,documentationPath); 
         }
 
         return true;
@@ -249,11 +286,11 @@ flows option generates a dependency diagram and modules a list of items in the a
         let fullPath = path;        
         if(!withFlow && withModules)
         {
-            fullPath += 'config_default.modules.README.mmd';
+            fullPath += '.modules.README.mmd';
         }
         else
         {
-            fullPath += 'config_default.README.mmd';
+            fullPath += '.README.mmd';
         }
 
         fullPath = fullPath.replace("//","/");
