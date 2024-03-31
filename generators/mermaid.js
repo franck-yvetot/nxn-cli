@@ -83,7 +83,7 @@ flows option generates a dependency diagram and modules a list of items in the a
      */
     getPaths(params)
     {
-        let {force,path,args,srcDir} = params;
+        let {force,path,args,srcDir,toDir} = params;
         const myArgs = args;
         let dirname = params.toDir;
 
@@ -91,10 +91,10 @@ flows option generates a dependency diagram and modules a list of items in the a
         let moduleUpath = arg0.split("@");
         if(moduleUpath.length == 2)
         {
-            const configPath = [srcDir+"/applications/"+moduleUpath[1]+"/config/"];
+            const configPath = [toDir+"/applications/"+moduleUpath[1]+"/config/"];
 
             // set documentation path
-            params.docPath = srcDir+"/applications/"+moduleUpath[1]+"/documentation";
+            params.docPath = toDir+"/applications/"+moduleUpath[1]+"/documentation";
 
             let configName;
             if(moduleUpath[1]==moduleUpath[0])                
@@ -108,7 +108,7 @@ flows option generates a dependency diagram and modules a list of items in the a
             return {
                 configName,
                 configPath,
-                documentationPath:srcDir+"/applications/"+moduleUpath[1]+"/documentation/"+configName
+                documentationPath:toDir+"/applications/"+moduleUpath[1]+"/documentation/"+configName
             };
         }
 
