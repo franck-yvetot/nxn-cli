@@ -12,10 +12,18 @@ subgraph main
         classDef localeCls fill:#73BF67,stroke:#eee,color:#fff        
     generate_route("generate_route"):::routeCls
     generate_route -- generateSce -->generate;
+    db[("db")]:::dataCls
     mermaid["mermaid"]:::serviceCls
     model["model"]:::serviceCls
     generate["generate"]:::serviceCls
+    generate -- mermaid -->mermaid;
+    generate -- model -->model;
+    generate -- module -->module;
     module["module"]:::serviceCls
+    config_locale>"config_locale"]:::localeCls
+    config_model[/"config_model"/]:::dataCls
+    config_model --> db;
+    config_model -- locale -->config_locale;
 end
 
     subgraph Legend
