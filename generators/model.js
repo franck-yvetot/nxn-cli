@@ -142,7 +142,7 @@ class ComponentGenerator extends BaseGenerator
     }
 
     /**
-     * Get the FNAME.
+     * Get the FLABEL.
      * @returns {FTYPE} - FDESCRIPTION or null if not set.
      */
     getUP_CAMEL_NAME() {
@@ -165,6 +165,7 @@ class ComponentGenerator extends BaseGenerator
                 .replace(/CLASS_NAME/g,clsName)
                 .replace(/UP_CAMEL_NAME/g,desc.CamelName)
                 .replace(/FNAME/g,desc.fname)
+                .replace(/FLABEL/g,desc.label)
                 .replace(/FTYPE/g,desc.ftype)
                 .replace(/FDESCRIPTION/g,desc.description)
                 ;
@@ -181,6 +182,7 @@ class ComponentGenerator extends BaseGenerator
                 .replace(/CLASS_NAME/g,clsName)
                 .replace(/UP_CAMEL_NAME/g,desc.CamelName)
                 .replace(/FNAME/g,desc.fname)
+                .replace(/FLABEL/g,desc.label)
                 .replace(/FTYPE/g,desc.ftype)
                 .replace(/FDESCRIPTION/g,desc.description);
 
@@ -236,6 +238,19 @@ class ComponentGenerator extends BaseGenerator
             */          
     }
 
+    /**
+     * 
+     * @param {string} fname 
+     * @param {*} fields 
+     * @param {string} alias 
+     * @returns {{
+            fname: string,
+            ftype: string,
+            label: string,
+            description: string,
+            CamelName: string
+        }}
+     */
     getFiledDesc(fname,fields,alias=null) 
     {
         const field = fields[fname];
@@ -250,6 +265,7 @@ class ComponentGenerator extends BaseGenerator
         let desc = {
             fname,
             ftype,
+            label: field.label || fname.replace("_"," "),
             description: field.description || field.title || field.label || fname,
             CamelName
         }
