@@ -445,25 +445,24 @@ flows option generates a dependency diagram and modules a list of items in the a
         const dataCls = "dataCls";
         const localeCls = "localeCls";
 
-        if(cls == "route")
+        if(cls == "route"  || desc.kind == "route")
             return "    "+name+"(\""+name+"\"):::"+cls2+"\n";
 
         if(cls == "service")
         {
             let path = desc.upath || desc.path;
 
-            if(path == "@nxn/db/db_model.service")
+            if(path == "@nxn/db/db_model.service"  || desc.kind == "data")
                 return "    "+name+"[/\""+name+"\"/]:::"+dataCls+"\n";
 
-            if(path == "@nxn/db/locale.service")
+            if(path == "@nxn/db/locale.service"  || desc.kind == "locale")
                 return "    "+name+">\""+name+"\"]:::"+localeCls+"\n";
 
-            if(path == "@nxn/db/mysql.service")
+            if(path == "@nxn/db/mysql.service"  || desc.kind == "db")
                 return "    "+name+"[(\""+name+"\")]:::"+dataCls+"\n";
 
             if(path == "firestore@googleapi" || path == "@nxn/db/firestore.service")
                 return "    "+name+"[(\""+name+"\")]:::"+dataCls+"\n";
-
         }
 
         return "    "+name+"[\""+name+"\"]:::"+cls2+"\n";
@@ -602,20 +601,20 @@ flows option generates a dependency diagram and modules a list of items in the a
         const dataCls = "dataCls";
         const localeCls = "localeCls";
 
-        if(cls == "route")
+        if(cls == "route" || desc.kind == "route")
             return "    "+nameDoc+"(\""+content+"\")"+":::"+cls2+"\n";
 
         if(cls == "service")
         {
             let path = desc.upath || desc.path;
 
-            if(path == "@nxn/db/db_model.service")
+            if(path == "@nxn/db/db_model.service" || desc.kind == "data")
                 return "    "+nameDoc+"[/\""+name+"\"/]:::"+dataCls+"\n";
 
-            if(path == "@nxn/db/locale.service")
+            if(path == "@nxn/db/locale.service" || desc.kind == "locale")
                 return "    "+nameDoc+">\""+name+"\"]:::"+localeCls+"\n";
 
-            if(path == "@nxn/db/mysql.service")
+            if(path == "@nxn/db/mysql.service" || desc.kind == "db")
                 return "    "+nameDoc+"[(\""+content+"\")]"+":::"+dataCls+"\n";
 
             if(path == "firestore@googleapi" || path == "@nxn/db/firestore.service")
