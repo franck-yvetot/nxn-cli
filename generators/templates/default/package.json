@@ -1,6 +1,7 @@
 {
     "scripts": {
         "start": "node index.js",
+        "start2": "dotenv -e .env -- npm run start",
         "pull": "git pull  && git submodule foreach --recursive git pull",
         "docker": "docker build . -f Dockerfile -t my_app_name",
         "docker:run": "docker run -p 3000:3000 my_app_name",
@@ -12,7 +13,12 @@
         "@nxn/db": "^1.0.81",
         "@nxn/files": "^1.0.23",
         "axios": "^1.6.7",
+        "cross-var": "^1.1.0",
+        "dotenv": "^16.4.5",
+        "dotenv-cli": "^7.4.1",
         "firebase-admin": "^12.0.0",
-        "mysql2": "^3.9.2"
+        "mysql2": "^3.9.2",
+        "swagger-jsdoc": "^6.2.8",
+        "swagger-ui-express": "^5.0.0"
     }
 }

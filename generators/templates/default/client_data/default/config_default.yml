@@ -49,6 +49,11 @@ middleware:
     cors2:
       verbs: GET,POST,PUT,DELETE
     env: {}
+    swagger_js_doc:
+      title: "Modules APIs"
+      description: complete title and version
+      version: "1.1"
+      saveToPath: swagger_api.yml    
     debug:
       path: "@nxn/debug"
       DEBUG: "*"

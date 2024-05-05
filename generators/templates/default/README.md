@@ -6,19 +6,18 @@ DESCRIBE YOU APP HERE
 
 ## API
 
-GENERATE swagger file and add it in your application under /application/MY APP/documentation.
-(use ChatGPT for now, for bootstraping it or swaggerautogen. Soon to be provided by nxn cli... )
-
-cf. [swagger file](/applications/drive_indexer/documentation/indexer.swagger.yml)
+use swagger js doc annotations in routes (/applications/routes/*.js)
+and middleware swagger_js_doc.
+APIs are then availeble on https://YOUR URL/api-docs
 
 ## Install
 
 UPDATE BELOW:
 
 ```shell
-mkdir drive_indexer
-cd drive_indexer
-git clone https://github.com/PresenceSoft/gdrives_indexer.git .
+mkdir MY_APP
+cd MY_APP
+git clone https://github.com/xxx.git .
 git submodule update --init --recursive
 npm install
 ```

@@ -17,7 +17,8 @@ const templates = [
     'crud',
     'db',
     'type',
-    'mermaid'
+    'mermaid',
+    'middleware',
 ]
 
 class Generators {
