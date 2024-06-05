@@ -5,6 +5,15 @@ const {configSce,bootSce} = require("@nxn/boot");
 
 // init config reader from client data
 var myArgs = process.argv.slice(2);
+
+// support --experimental-modules or other option
+if(myArgs[0].startsWith("--"))
+    myArgs.shift();
+
+// support .mjs with import() 
+if(myArgs[0].startsWith("--"))
+    myArgs.shift();
+
 let client = myArgs[0] || 'default';
 global.__clientDir = `${__dirname}/client_data/${client}/`;
 
